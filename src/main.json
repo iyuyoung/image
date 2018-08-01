@@ -1,0 +1,11 @@
+{
+  "pages": [
+    "pages/index/main"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "unsplash精选",
+    "navigationBarTextStyle": "black"
+  }
+}
