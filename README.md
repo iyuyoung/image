@@ -2,7 +2,7 @@
 > 基于mpvue开发的一款查看Unsplash图片的小程序
 
 ### 演示
-![演示](static/image/giphy.gif)
+![演示](http://pbdcq73yg.bkt.clouddn.com/giphy.gif)
 
 
 ### 相关依赖
@@ -17,7 +17,7 @@ https://mp.weixin.qq.com/s/1f6BA8W2aCr9qWZ6Kgz_jQ
 
 
 ### 小程序二维码
-![小程序二维码](static/image/qrcode.jpg)
+![小程序二维码](http://pbdcq73yg.bkt.clouddn.com/qrcode.jpg)
 
 ### todolist
 添加作者详情页
