@@ -3,12 +3,9 @@
     <div class="content">
       <swiper previous-margin="15px" next-margin="15px" @change="change($event)">
         <block v-for="(val,index) in data" :key="index">
-          <swiper-item class="item"
-                       :class="{'current-item':current==index}"
-                       :data-value="val.urls.regular"
-                       @click="browser($event)">
-            <image :src="val.urls.regular" class="slide-image" mode="aspectFill"></image>
-            <div class="describe">
+          <swiper-item class="item" :class="{'current-item':current==index}">
+            <image :src="val.urls.small" class="slide-image" mode="aspectFill" :data-value="val.urls.small" @click="browser($event)"></image>
+            <div class="describe" :data-value='val.user.username' @click="author($event)">
               <image :src="val.user.profile_image.small"></image>
               <span v-text="val.user.name"></span>
             </div>
@@ -20,7 +17,7 @@
 </template>
 
 <script>
-  import {getData} from '../../utils/request'
+  import { getData } from '../../utils/request'
 
   export default {
     data () {
@@ -56,32 +53,107 @@
           current: path,
           urls: [path]
         })
+      },
+      author (e) {
+        wx.navigateTo({
+          url: `/pages/author/main?username=${e.currentTarget.dataset.value}`
+        })
       }
     }
   }
 </script>
 
 <style scoped>
-  .main{float:left;display:flex;box-sizing:border-box;width:7.5rem;}
+  .main {
+    float: left;
+    display: flex;
+    box-sizing: border-box;
+    width: 7.5rem;
+  }
 
-  .content{float:left;margin-top:10px;width:7.5rem;}
+  .content {
+    float: left;
+    margin-top: 10px;
+    width: 7.5rem;
+  }
 
-  swiper{height:11rem;}
+  swiper {
+    height: 11rem;
+  }
 
-  .item{position:relative;display:flex;width:7.5rem;height:11rem;flex-wrap:wrap;}
+  .item {
+    position: relative;
+    display: flex;
+    width: 7.5rem;
+    height: 11rem;
+    flex-wrap: wrap;
+  }
 
-  .slide-image{overflow:hidden;margin:auto;width:7rem;height:10rem;}
+  .slide-image {
+    overflow: hidden;
+    margin: auto;
+    width: 7rem;
+    height: 10rem;
+  }
 
-  .item .describe{bottom:-1rem;opacity:0;}
+  .item .describe {
+    bottom: -1rem;
+    opacity: 0;
+  }
 
-  .describe{position:absolute;left:0;width:7rem;background:-webkit-gradient(linear, left top, left bottom, from(transparent), to(#000));background:-webkit-linear-gradient(top, transparent, #000);background:-moz-linear-gradient(top, transparent, #000);background:-ms-linear-gradient(top, transparent, #000);background-color:transparent;color:#fff;text-align:center;font-size:14px;line-height:1rem;opacity:1 !important;display:flex;justify-content:center}
-  .describe image{width:0.65rem !important;height:0.65rem !important;float:left;border-radius:100%;margin-top:0.175rem;margin-right:10px;}
-  .describe span{float:left}
-  .current-item{z-index:10;border-radius:4px;-webkit-box-shadow:0 5px 12px rgba(255, 255, 255, .5);-moz-box-shadow:0 5px 20px rgba(255, 255, 255, .5);box-shadow:0 5px 20px rgba(255, 255, 255, .5);transition:all .5s;}
+  .describe {
+    position: absolute;
+    left: 0;
+    width: 7rem;
+    background: -webkit-gradient(linear, left top, left bottom, from(transparent), to(#000));
+    background: -webkit-linear-gradient(top, transparent, #000);
+    background: -moz-linear-gradient(top, transparent, #000);
+    background: -ms-linear-gradient(top, transparent, #000);
+    background-color: transparent;
+    color: #fff;
+    text-align: center;
+    font-size: 14px;
+    line-height: 1rem;
+    opacity: 1 !important;
+    display: flex;
+    z-index: 100;
+    justify-content: center
+  }
 
-  .current-item .describe{bottom:0;border-radius:0 0 4px 4px;opacity:10;transition:all .5s;}
+  .describe image {
+    width: 0.65rem !important;
+    height: 0.65rem !important;
+    float: left;
+    border-radius: 100%;
+    margin-top: 0.175rem;
+    margin-right: 10px;
+  }
 
-  .current-item image{width:100%;height:11rem;transition:all .5s;}
+  .describe span {
+    float: left
+  }
+
+  .current-item {
+    z-index: 10;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 5px 12px rgba(255, 255, 255, .5);
+    -moz-box-shadow: 0 5px 20px rgba(255, 255, 255, .5);
+    box-shadow: 0 5px 20px rgba(255, 255, 255, .5);
+    transition: all .5s;
+  }
+
+  .current-item .describe {
+    bottom: 0;
+    border-radius: 0 0 4px 4px;
+    opacity: 10;
+    transition: all .5s;
+  }
+
+  .current-item image {
+    width: 100%;
+    height: 11rem;
+    transition: all .5s;
+  }
 
 
 </style>

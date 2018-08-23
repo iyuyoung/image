@@ -1,6 +1,7 @@
 {
   "pages": [
-    "pages/index/main"
+    "pages/index/main",
+    "pages/author/main"
   ],
   "window": {
     "backgroundTextStyle": "light",

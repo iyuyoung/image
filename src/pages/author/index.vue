@@ -1,0 +1,180 @@
+<template>
+  <div class="main">
+    <div class="header">
+      <div class="header-bg"></div>
+      <div class="header-detail">
+        <div class="info">
+          <div class="avatar">
+            <image :src="user.profile_image.small"></image>
+          </div>
+          <div class="message">
+            <span class="nickname" v-text="user.name"></span>
+            <div class="message-item">
+              <span class="location" v-text="user.location"></span>
+              <span class="site" v-text="user.portfolio_url"></span>
+            </div>
+          </div>
+        </div>
+        <div class="detail">
+          <span class="describe" v-text="user.bio"></span>
+        </div>
+      </div>
+    </div>
+    <div class="content">
+      <div class="item" v-for="(val,key) in data" :key="key">
+        <image :src="val.urls.small" mode="aspectFill"></image>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+  import { getData } from '../../utils/request'
+
+  export default {
+    name: 'index',
+    data () {
+      return {
+        data: [],
+        user: [],
+        page: 1
+      }
+    },
+    onLoad (option) {
+      this._getData(option.username)
+    },
+    methods: {
+      async _getData (username) {
+        let data = await getData(`user?username=${username}&page=${this.page}`, null, 'GET')
+        data.data.map((item) => {
+          this.data.push(item)
+        })
+        this.user = data.user
+        this.page++
+      }
+    }
+  }
+</script>
+
+<style scoped>
+  .main {
+    width: 100%;
+    border-top: 1px solid #f2f2f2;
+    float: left;
+  }
+
+  .header {
+    width: 7.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    box-sizing: border-box;
+  }
+
+  .header-bg {
+    width: 7.5rem;
+    height: 3rem;
+    background: linear-gradient(-180deg, #17ead9, #6078ea);
+    position: absolute;
+    top: 0px;
+    left: 0px;
+  }
+
+  .header-detail {
+    width: 6rem;
+    margin: auto;
+    z-index: 100;
+    background: #fff;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 25px;
+    -webkit-box-shadow: 0 5px 25px rgba(0, 0, 0, .3);
+    -moz-box-shadow: 0 5px 25px rgba(0, 0, 0, .3);
+    box-shadow: 0 5px 25px rgba(0, 0, 0, .3);
+  }
+
+  .info {
+    width: 6rem;
+    display: flex;
+    margin-top: 10px;
+  }
+
+  .avatar {
+    display: flex
+  }
+
+  .avatar image {
+    width: 1rem;
+    height: 1rem;
+    margin: auto;
+    border-radius: 100%;
+    overflow: hidden;
+  }
+
+  .message {
+    width: 5rem;
+    box-sizing: border-box;
+    padding: 0.1rem 0.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    height: 1rem;
+  }
+
+  .nickname {
+    width: 100%;
+    font-size: 15px;
+  }
+
+  .message-item {
+    display: flex;
+    color: #a1a1a1;
+    font-size: 14px;
+    display: block;
+    overflow: hidden;
+    word-break: keep-all;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .message-item span:last-child {
+    padding-left: 15px;
+  }
+
+  .detail {
+    width: 100%;
+    font-size: 15px;
+    color: #a1a1a1;
+    float: left;
+    height: 50px;
+    margin-top: 15px;
+  }
+
+  .detail span {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    word-break: break-all;
+  }
+
+  .describe {
+    width: 100%;
+    float: left;
+    color: #333;
+  }
+
+  .content {
+    width: 7.5rem;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+
+  .content image {
+    width: 7rem;
+  }
+
+  .content .item:first-child {
+    margin-top: 10px;
+  }
+</style>
