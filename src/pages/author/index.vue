@@ -5,7 +5,7 @@
       <div class="header-detail">
         <div class="info">
           <div class="avatar">
-            <image :src="user.profile_image.small"></image>
+            <image :src="user.profile_image['small']"></image>
           </div>
           <div class="message">
             <span class="nickname" v-text="user.name"></span>
@@ -30,6 +30,7 @@
 
 <script>
   import { getData } from '../../utils/request'
+  import store from './store'
 
   export default {
     name: 'index',
@@ -41,17 +42,24 @@
       }
     },
     onLoad (option) {
+      this.page = 1
+      this.data = []
+      this.user = store.state.data
       this._getData(option.username)
     },
     methods: {
       async _getData (username) {
         let data = await getData(`user?username=${username}&page=${this.page}`, null, 'GET')
-        data.data.map((item) => {
-          this.data.push(item)
-        })
-        this.user = data.user
-        this.page++
+        if (data.error_code === 10000) {
+          data.data.map((item) => {
+            this.data.push(item)
+          })
+          this.page++
+        }
       }
+    },
+    onReachBottom: function () {
+      console.log(this.page++)
     }
   }
 </script>

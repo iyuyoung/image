@@ -2,10 +2,11 @@
   <div class="main">
     <div class="content">
       <swiper previous-margin="15px" next-margin="15px" @change="change($event)">
-        <block v-for="(val,index) in data" :key="index">
-          <swiper-item class="item" :class="{'current-item':current==index}">
-            <image :src="val.urls.small" class="slide-image" mode="aspectFill" :data-value="val.urls.small" @click="browser($event)"></image>
-            <div class="describe" :data-value='val.user.username' @click="author($event)">
+        <block v-for="(val,key) in data" :key="key">
+          <swiper-item class="item" :class="{'current-item':current==key}">
+            <image :src="val.urls.small" class="slide-image" mode="aspectFill" :data-value="val.urls.small"
+                   @click="browser($event)"></image>
+            <div class="describe" :data-value='val.user.username' @click="author($event,key)">
               <image :src="val.user.profile_image.small"></image>
               <span v-text="val.user.name"></span>
             </div>
@@ -18,6 +19,7 @@
 
 <script>
   import { getData } from '../../utils/request'
+  import store from '../author/store'
 
   export default {
     data () {
@@ -36,10 +38,12 @@
     methods: {
       async _getData (id) {
         let data = await getData(`index/${id}`, null, 'GET')
-        data.data.map((item) => {
-          this.data.push(item)
-        })
-        this.page++
+        if (data.error_code === 10000) {
+          data.data.map((item) => {
+            this.data.push(item)
+          })
+          this.page++
+        }
       },
       change (e) {
         this.current = e.target.current
@@ -54,7 +58,8 @@
           urls: [path]
         })
       },
-      author (e) {
+      author (e, key) {
+        store.commit('setData', this.data[key]['user'])
         wx.navigateTo({
           url: `/pages/author/main?username=${e.currentTarget.dataset.value}`
         })
