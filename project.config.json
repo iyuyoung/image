@@ -9,7 +9,7 @@
 	},
 	"miniprogramRoot": "./dist/",
 	"compileType": "miniprogram",
-	"appid": "",
+	"appid": "wx1269229daadd4d68",
 	"projectname": "images",
 	"condition": {
 		"search": {

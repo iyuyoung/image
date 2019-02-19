@@ -2,9 +2,7 @@
 > 基于mpvue开发的一款查看Unsplash图片的小程序
 
 ### 演示
-![演示](http://pbdcq73yg.bkt.clouddn.com/giphy.gif)
-
-![演示](https://media.giphy.com/media/ywk6PA9IbMU3EGerZ7/giphy.gif)
+![演示](http://pbdcq73yg.bkt.clouddn.com/giphy.gif)![演示](https://media.giphy.com/media/ywk6PA9IbMU3EGerZ7/giphy.gif)
 
 
 ### 相关依赖

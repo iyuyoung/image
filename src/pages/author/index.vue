@@ -1,5 +1,6 @@
 <template>
   <div class="main">
+    <Top :title="user.name" :background="background"></Top>
     <div class="header">
       <div class="header-bg"></div>
       <div class="header-detail">
@@ -16,14 +17,17 @@
           </div>
         </div>
         <div class="detail">
-          <span class="describe" v-text="user.bio"></span>
+          <span class="describe" v-text="user.bio===null?'No brief introduction':user.bio"></span>
         </div>
       </div>
     </div>
-    <div class="content">
+    <div class="content" v-if="data.length">
       <div class="item" v-for="(val,key) in data" :key="key">
         <image :src="val.urls.small" mode="aspectFill"></image>
       </div>
+    </div>
+    <div class="no-data" v-else>
+      <loading></loading>
     </div>
   </div>
 </template>
@@ -31,11 +35,15 @@
 <script>
   import { getData } from '../../utils/request'
   import store from './store'
+  import Top from '../../components/Top'
+  import Loading from '../../components/Loading'
 
   export default {
     name: 'index',
+    components: {Loading, Top},
     data () {
       return {
+        background: 'rgba(255,255,255,0)',
         data: [],
         user: [],
         page: 1
@@ -58,6 +66,12 @@
         }
       }
     },
+    onPageScroll: function (e) {
+      let color = e.scrollTop / 100
+      if (color < 1) {
+        this.background = `rgba(255,255,255,${color})`
+      }
+    },
     onReachBottom: function () {
       console.log(this.page++)
     }
@@ -70,7 +84,6 @@
     border-top: 1px solid #f2f2f2;
     float: left;
   }
-
   .header {
     width: 7.5rem;
     display: flex;
@@ -80,7 +93,7 @@
 
   .header-bg {
     width: 7.5rem;
-    height: 3rem;
+    height: 4rem;
     background: linear-gradient(-180deg, #17ead9, #6078ea);
     position: absolute;
     top: 0px;
@@ -94,7 +107,7 @@
     background: #fff;
     padding: 15px;
     border-radius: 5px;
-    margin-top: 25px;
+    margin-top: 0.5rem;
     -webkit-box-shadow: 0 5px 25px rgba(0, 0, 0, .3);
     -moz-box-shadow: 0 5px 25px rgba(0, 0, 0, .3);
     box-shadow: 0 5px 25px rgba(0, 0, 0, .3);
@@ -185,4 +198,5 @@
   .content .item:first-child {
     margin-top: 10px;
   }
+  .no-data{width:100%;display:flex;height:5rem;}
 </style>

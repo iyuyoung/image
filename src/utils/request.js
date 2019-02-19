@@ -9,7 +9,6 @@ request.interceptors.request.use(
   (request) => {
     // 给所有请求添加自定义header
     request.headers['token'] = wx.getStorageSync('token')
-    wx.showLoading({title: '加载中...'})
     return request
   }
 )

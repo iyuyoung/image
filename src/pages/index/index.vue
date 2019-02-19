@@ -1,6 +1,9 @@
 <template>
   <div class="main">
-    <div class="content">
+    <header :style="{'height':height+'px','padding-top':paddingHeight+'px'}">
+      <image src="../../static/image/unsplash_logo.png"></image>
+    </header>
+    <div class="content" v-if="!time">
       <swiper previous-margin="15px" next-margin="15px" @change="change($event)">
         <block v-for="(val,key) in data" :key="key">
           <swiper-item class="item" :class="{'current-item':current==key}">
@@ -14,25 +17,40 @@
         </block>
       </swiper>
     </div>
+    <div class="no-data" v-else>
+      <loading></loading>
+    </div>
   </div>
 </template>
 
 <script>
   import { getData } from '../../utils/request'
   import store from '../author/store'
+  import Loading from '../../components/Loading'
 
   export default {
     data () {
       return {
         current: 0,
         index: '',
+        height: 0,
+        time: 3,
+        paddingHeight: 0,
         page: 1,
         data: []
       }
     },
 
-    components: {},
+    components: {Loading},
     onLoad () {
+      setInterval(() => {
+        if (this.time) {
+          this.time--
+          console.log(this.time)
+        }
+      }, 1000)
+      this.height = this.TOP + 50
+      this.paddingHeight = this.TOP
       this._getData(this.page)
     },
     methods: {
@@ -69,96 +87,101 @@
 </script>
 
 <style scoped>
-  .main {
-    float: left;
-    display: flex;
-    box-sizing: border-box;
-    width: 7.5rem;
-  }
+  .main{
+    float:left;
+    display:flex;
+    box-sizing:border-box;
+    width:7.5rem;
+    }
 
-  .content {
-    float: left;
-    margin-top: 10px;
-    width: 7.5rem;
-  }
+  .content{
+    float:left;
+    margin-top:90px;
+    width:7.5rem;
+    }
 
-  swiper {
-    height: 11rem;
-  }
+  .no-data{width:100%;height:10rem;display:flex;}
 
-  .item {
-    position: relative;
-    display: flex;
-    width: 7.5rem;
-    height: 11rem;
-    flex-wrap: wrap;
-  }
+  swiper{
+    height:10rem;
+    }
 
-  .slide-image {
-    overflow: hidden;
-    margin: auto;
-    width: 7rem;
-    height: 10rem;
-  }
+  .item{
+    position:relative;
+    display:flex;
+    width:7.5rem;
+    height:10rem;
+    flex-wrap:wrap;
+    }
 
-  .item .describe {
-    bottom: -1rem;
-    opacity: 0;
-  }
+  .slide-image{
+    overflow:hidden;
+    margin:auto;
+    width:7rem;
+    height:9rem;
+    }
 
-  .describe {
-    position: absolute;
-    left: 0;
-    width: 7rem;
-    background: -webkit-gradient(linear, left top, left bottom, from(transparent), to(#000));
-    background: -webkit-linear-gradient(top, transparent, #000);
-    background: -moz-linear-gradient(top, transparent, #000);
-    background: -ms-linear-gradient(top, transparent, #000);
-    background-color: transparent;
-    color: #fff;
-    text-align: center;
-    font-size: 14px;
-    line-height: 1rem;
-    opacity: 1 !important;
-    display: flex;
-    z-index: 100;
-    justify-content: center
-  }
+  .item .describe{
+    bottom:-1rem;
+    opacity:0;
+    }
 
-  .describe image {
-    width: 0.65rem !important;
-    height: 0.65rem !important;
-    float: left;
-    border-radius: 100%;
-    margin-top: 0.175rem;
-    margin-right: 10px;
-  }
+  .describe{
+    position:absolute;
+    left:0;
+    width:7rem;
+    background:-webkit-gradient(linear, left top, left bottom, from(transparent), to(#000));
+    background:-webkit-linear-gradient(top, transparent, #000);
+    background:-moz-linear-gradient(top, transparent, #000);
+    background:-ms-linear-gradient(top, transparent, #000);
+    background-color:transparent;
+    color:#fff;
+    text-align:center;
+    font-size:14px;
+    line-height:1rem;
+    opacity:1 !important;
+    display:flex;
+    z-index:100;
+    justify-content:center
+    }
 
-  .describe span {
-    float: left
-  }
+  .describe image{
+    width:0.65rem !important;
+    height:0.65rem !important;
+    float:left;
+    border-radius:100%;
+    margin-top:0.175rem;
+    margin-right:10px;
+    }
 
-  .current-item {
-    z-index: 10;
-    border-radius: 4px;
-    -webkit-box-shadow: 0 5px 12px rgba(255, 255, 255, .5);
-    -moz-box-shadow: 0 5px 20px rgba(255, 255, 255, .5);
-    box-shadow: 0 5px 20px rgba(255, 255, 255, .5);
-    transition: all .5s;
-  }
+  .describe span{
+    float:left
+    }
 
-  .current-item .describe {
-    bottom: 0;
-    border-radius: 0 0 4px 4px;
-    opacity: 10;
-    transition: all .5s;
-  }
+  .current-item{
+    z-index:10;
+    border-radius:4px;
+    -webkit-box-shadow:0 5px 12px rgba(255, 255, 255, .5);
+    -moz-box-shadow:0 5px 20px rgba(255, 255, 255, .5);
+    box-shadow:0 5px 20px rgba(255, 255, 255, .5);
+    transition:all .5s;
+    }
 
-  .current-item image {
-    width: 100%;
-    height: 11rem;
-    transition: all .5s;
-  }
+  .current-item .describe{
+    bottom:0;
+    border-radius:0 0 4px 4px;
+    opacity:10;
+    transition:all .5s;
+    }
 
+  .current-item image{
+    width:100%;
+    height:10rem;
+    transition:all .5s;
+    }
+
+  header{width:100%;background:#fff;position:fixed;box-shadow:1px 1px 5px rgba(0, 0, 0, .05);left:0px;top:0px;display:flex;box-sizing:border-box;z-index:9999}
+
+  header image{width:100px;margin-left:10px;height:25px;margin-top:15px;}
 
 </style>
