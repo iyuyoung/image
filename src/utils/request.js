@@ -1,4 +1,4 @@
-var Fly = require("flyio/dist/npm/wx")
+var Fly = require('flyio/dist/npm/wx')
 
 const request = new Fly()
 
