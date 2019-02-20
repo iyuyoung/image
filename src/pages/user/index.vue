@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <div class="header">
-      <image src="../../static/image/unsplash_logo.png"></image>
+      <image src="../../static/image/unsplash_logo_white.png"></image>
     </div>
     <header>
       <div class="header-bg">

@@ -3,23 +3,29 @@
     <header :style="{'height':height+'px','padding-top':paddingHeight+'px'}">
       <image src="../../static/image/unsplash_logo.png"></image>
     </header>
-    <div class="content" v-if="!time">
-      <swiper previous-margin="15px" next-margin="15px" @change="change($event)">
-        <block v-for="(val,key) in data" :key="key">
-          <swiper-item class="item" :class="{'current-item':current==key}">
-            <image :src="val.urls.small" class="slide-image" mode="aspectFill" :data-value="val.urls.small"
-                   @click="browser($event)"></image>
-            <div class="describe" :data-value='val.user.username' @click="author($event,key)">
-              <image :src="val.user.profile_image.small"></image>
-              <span v-text="val.user.name"></span>
-            </div>
-          </swiper-item>
-        </block>
-      </swiper>
-    </div>
-    <div class="no-data" v-else>
-      <loading></loading>
-    </div>
+    <scroll-view>
+      <div class="content" v-if="!time">
+        <swiper previous-margin="15px" next-margin="15px" @change="change($event)">
+          <block v-for="(val,key) in data" :key="key">
+            <swiper-item class="item" :class="{'current-item':current==key}">
+              <image lazy-load="true" :src="val.urls.small" class="slide-image" mode="aspectFill" :data-value="val.urls.small"  @click="browser($event)"></image>
+              <div class="like" @click="like(true)">
+                <image src="../../static/image/icon_dislike.png" v-if="status"></image>
+                <image src="../../static/image/icon_like.png" v-else></image>
+              </div>
+              <div class="describe" :data-value='val.user.username' @click="author($event,key)">
+                <image :src="val.user.profile_image.small"></image>
+                <span v-text="val.user.name"></span>
+              </div>
+            </swiper-item>
+          </block>
+        </swiper>
+      </div>
+      <div class="no-data" v-else>
+        <loading></loading>
+      </div>
+    </scroll-view>
+    <Login :status="status" @close_login="close"></Login>
   </div>
 </template>
 
@@ -27,11 +33,13 @@
   import { getData } from '../../utils/request'
   import store from '../author/store'
   import Loading from '../../components/Loading'
+  import Login from '../../components/Login'
 
-  export default {
+export default {
     data () {
       return {
         current: 0,
+        status: false,
         index: '',
         height: 0,
         time: 3,
@@ -41,7 +49,7 @@
       }
     },
 
-    components: {Loading},
+    components: { Login, Loading },
     onLoad () {
       setInterval(() => {
         if (this.time) {
@@ -81,6 +89,13 @@
         wx.navigateTo({
           url: `/pages/author/main?username=${e.currentTarget.dataset.value}`
         })
+      },
+      // 收藏
+      like (status) {
+        this.status = status
+      },
+      close () {
+        this.status = false
       }
     }
   }
@@ -120,7 +135,8 @@
     width:7rem;
     height:9rem;
     }
-
+  .like{width:35px;height:35px;position:absolute;top:10px;right:10px;background:rgba(0,0,0,0.5);border-radius:100%;display:flex}
+  .like image{width:28px !important;height:28px !important;margin:auto}
   .item .describe{
     bottom:-1rem;
     opacity:0;
