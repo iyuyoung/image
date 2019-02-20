@@ -1,6 +1,8 @@
 {
   "pages": [
     "pages/index/main",
+    "pages/list/main",
+    "pages/setting/main",
     "pages/user/main",
     "pages/feed/main",
     "pages/author/main"

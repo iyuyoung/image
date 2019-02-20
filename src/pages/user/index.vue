@@ -18,11 +18,11 @@
           </div>
         </div>
         <div class="server flex padding">
-          <div class="server-item">
+          <div class="server-item" @click="open('list')">
             <span>20</span>
             <span>足迹</span>
           </div>
-          <div class="server-item">
+          <div class="server-item" @click="open('list')">
             <span>20</span>
             <span>收藏</span>
           </div>
@@ -30,7 +30,7 @@
       </div>
     </header>
     <div class="content flex">
-      <div class="item flex" @click="open('resume',0)">
+      <div class="item flex" @click="open('setting',0)">
         <image src="../../static/image/icon-setting.png"></image>
         <span>设置</span>
         <image src="../../static/image/icon-right.png"></image>
