@@ -4,16 +4,14 @@
       <image src="../../static/image/unsplash_logo_white.png"></image>
     </div>
     <header>
-      <div class="header-bg">
-        <image src="../../static/image/home-bg.png"></image>
-      </div>
+      <div class="header-bg"></div>
       <div class="header-main padding">
         <div class="header-item flex" @click="open('personal',0)">
           <div class="avatar">
-            <image src="http://thirdwx.qlogo.cn/mmopen/YacFoKmJGSLw7KNkc70ibgY4bkYTFRBicxXnVuXeZ8JNdiaWu9AtibtYRfPsvjFN0H3qRVID2HuHia0x8kol0ujuqOnTD0q8BTZkh/132"></image>
+            <open-data class="avatar-url" type="userAvatarUrl"></open-data>
           </div>
           <div class="userInfo">
-            <span class="nickname">于杨</span>
+            <open-data type="userNickName"></open-data>
             <span class="nickname">男</span>
           </div>
         </div>
@@ -88,7 +86,7 @@
         }
       .header-main{width:6.8rem;height:2.85rem;display:flex;background:#FFFFFF;box-shadow:1px 2px 5px rgba(0, 0, 0, .15);position:absolute;left:0.35rem;top:2rem;border-radius:3px;box-sizing:border-box;flex-wrap:wrap;
         .avatar{width:1.5rem;height:1.2rem;display:flex;
-          image{width:1.2rem;height:1.2rem;margin:auto;border-radius:100%;box-shadow:0px 1px 5px rgba(0, 0, 0, 0.1)}
+          .avatar-url{width:1.2rem;height:1.2rem;margin:auto;border-radius:100%;box-shadow:0px 1px 5px rgba(0, 0, 0, 0.1)}
           }
         .userInfo{width:4rem;display:flex;flex-wrap:wrap;align-content:center;padding-left:5px;
           span{width:100%;display:flex;font-size:16px;box-sizing:border-box}

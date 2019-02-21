@@ -54,7 +54,6 @@ export default {
       setInterval(() => {
         if (this.time) {
           this.time--
-          console.log(this.time)
         }
       }, 1000)
       this.height = this.TOP + 50

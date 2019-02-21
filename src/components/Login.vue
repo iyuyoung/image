@@ -1,7 +1,7 @@
 <template>
     <div class="layer"  v-if="status">
       <div class="layer-bg"></div>
-      <div class="login">
+      <div class="login fadeInUp">
         <div class="login-icon" @click="close()">
           <image src="../../static/image/icon_close.png"></image>
         </div>
@@ -12,21 +12,57 @@
           <span>登陆后获得更多权益</span>
         </div>
         <div class="login-footer">
-          <button plain="true">登陆</button>
+          <button plain="true" lang="en" @click="login" open-type="getUserInfo">登陆</button>
         </div>
       </div>
     </div>
 </template>
 
 <script>
-  export default {
+  import {getData} from '../utils/request'
+  import {_setStorage} from '../utils'
+
+export default {
     name: 'Login',
     props: {
       'status': {'type': Boolean, 'default': false}
     },
     methods: {
+      async _getLogin (encryptedData, iv, code) {
+        let data = await getData('login', {'encryptedData': encryptedData, 'iv': iv, 'code': code}, 'POST')
+        if (data.error_code === 10000) {
+          this.status = false
+          _setStorage('token', data.token)
+          wx.showToast({
+            title: '登陆成功',
+            icon: 'none',
+            duration: 2000
+          })
+        }
+      },
+      _getUserInfo (code) {
+        wx.getUserInfo({
+          withCredentials: true,
+          lang: 'en',
+          success: (res) => {
+            this._getLogin(res.encryptedData, res.iv, code)
+          }
+        })
+      },
+      _getCode () {
+        wx.login({
+          success: (res) => {
+            if (res.code) {
+              this._getUserInfo(res.code)
+            }
+          }
+        })
+      },
       close () {
         this.$emit('close_login')
+      },
+      login () {
+        this._getCode()
       }
     }
   }
@@ -57,7 +93,7 @@
   .login-header{
     width:100%;
     display:flex;
-    image{width:180px;height:40px;margin:auto}
+    image{width:180px;height:49px;margin:auto}
     }
   .login-center{
     width:100%;
