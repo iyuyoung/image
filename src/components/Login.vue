@@ -1,7 +1,7 @@
 <template>
     <div class="layer"  v-if="status">
       <div class="layer-bg"></div>
-      <div class="login fadeInUp">
+      <div class="login" :class="{'fadeInUp':ani,'fadeOutDown':!ani}">
         <div class="login-icon" @click="close()">
           <image src="../../static/image/icon_close.png"></image>
         </div>
@@ -25,14 +25,18 @@
 export default {
     name: 'Login',
     props: {
-      'status': {'type': Boolean, 'default': false}
+      'status': {'type': Boolean, 'default': false},
+      'ani': {'type': Boolean, 'default': true}
     },
     methods: {
       async _getLogin (encryptedData, iv, code) {
         let data = await getData('login', {'encryptedData': encryptedData, 'iv': iv, 'code': code}, 'POST')
         if (data.error_code === 10000) {
-          this.status = false
           _setStorage('token', data.token)
+          this.ani = false
+          setTimeout(() => {
+            this.status = false
+          }, 200)
           wx.showToast({
             title: '登陆成功',
             icon: 'none',

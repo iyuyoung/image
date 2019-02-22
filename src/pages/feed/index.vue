@@ -9,7 +9,7 @@
           <span v-text="length">/300</span>
         </div>
         <textarea placeholder="请留下你的问题" maxlength='300' placeholder-style="color:#dcdcdc"
-                  @input="changeInput"></textarea>
+                  @input="changeInput" v-model="feed.content"></textarea>
         <div class="image flex">
           <div class="image-item" v-for="(val,index) in images" :key="index">
             <image :src="val" mode="aspectFill" @click="showImage(val)"></image>
@@ -23,7 +23,7 @@
         </div>
       </div>
     </div>
-    <footer class="flex">
+    <footer class="flex" @click="submit">
       <span>提交</span>
     </footer>
   </div>
@@ -31,20 +31,80 @@
 
 <script>
   import Top from '../../components/Top'
-  export default {
+  import {getData} from '../../utils/request'
+  import {_navigateBack, _isNull} from '../../utils'
+
+export default {
     components: { Top },
     data () {
       return {
+        status: true,
         length: 0,
-        images: []
+        images: [],
+        feed: {'content': '', 'image': ''}
       }
     },
 
     created () {
     },
     methods: {
+      async postData () {
+        let data = await getData('feed', this.feed, 'POST')
+        if (data.error_code === 10000) {
+          this.feed.image = ''
+          wx.showToast({
+            title: '提交成功',
+            icon: 'none'
+          })
+          setTimeout(() => {
+            _navigateBack()
+          }, 1000)
+        }
+      },
+      // submit
+      submit () {
+        if (_isNull(this.feed.content)) {
+          wx.showToast({
+            title: '问题不能为空',
+            icon: 'none'
+          })
+          return false
+        }
+        if (!this.status) {
+          return false
+        }
+        this.status = false
+        if (this.images.length) {
+          this.images.map((val) => {
+            this._uploads(val)
+          })
+        } else {
+          this.postData()
+        }
+      },
       changeInput (e) {
         this.length = e.target.value.length
+      },
+      // 上传图片
+      _uploads (item) {
+        wx.uploadFile({
+          url: 'https://uploads.0558web.com/index', // 仅为示例，非真实的接口地址
+          filePath: item,
+          name: 'file',
+          success: (res) => {
+            let data = JSON.parse(res.data)
+            if (data.error_code === 10000) {
+              if (!this.feed.image.trim().length) {
+                this.feed.image = data.path
+              } else {
+                this.feed.image = this.feed.image + ',' + data.path
+              }
+              if (this.feed.image.split(',').length === this.images.length) {
+                this.postData()
+              }
+            }
+          }
+        })
       },
       // 选择图片
       selectImage () {
@@ -109,7 +169,7 @@
 
   .image-item i{width:0.35rem;height:0.35rem;background:rgba(0, 0, 0, .5);border-radius:100%;display:flex;position:absolute;right:4px;top:4px;}
 
-  .image-item i image{width:0.25rem !important;height:0.25rem !important;margin:auto}
+  .image-item i image{width:0.23rem !important;height:0.23rem !important;margin:auto}
 
   .add-image{height:1rem;border-top:1px solid rgba(244, 244, 244, .5)}
 

@@ -11,6 +11,27 @@ export function _NavigateTo (path, param = '') {
 }
 
 /***
+ * 关闭页面
+ * @private
+ */
+export function _navigateBack () {
+  wx.navigateBack({
+    delta: 1
+  })
+}
+
+/**
+ * 判断是否为空
+ * @param text
+ * @returns {boolean}
+ */
+export function _isNull (text) {
+  if (!text || text === null || text === '' || typeof (text) === 'undefined' || !text.trim().length || text === 'null') {
+    return true
+  }
+}
+
+/***
  * 设置Storage
  * @param key
  * @param data
