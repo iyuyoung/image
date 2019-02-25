@@ -53,6 +53,7 @@ export function _getStorage (key) {
   wx.getStorage({
     key: key,
     success: (res) => {
+      console.log(res.data)
       return res.data
     }
   })

@@ -8,9 +8,10 @@
         <swiper previous-margin="15px" next-margin="15px" @change="change($event)">
           <block v-for="(val,key) in data" :key="key">
             <swiper-item class="item" :class="{'current-item':current==key}">
-              <image lazy-load="true" :src="val.urls.small" class="slide-image" mode="aspectFill" :data-value="val.urls.small"  @click="browser($event)"></image>
-              <div class="like" @click="like(true)">
-                <image src="../../static/image/icon_dislike.png" v-if="status"></image>
+              <image lazy-load="true" :src="val.urls.small" class="slide-image" mode="aspectFill"
+                     :data-value="val.urls.small" @click="browser($event,key)"></image>
+              <div class="like" @click="like(val.status,key)">
+                <image src="../../static/image/icon_dislike.png" v-if="!val.status"></image>
                 <image src="../../static/image/icon_like.png" v-else></image>
               </div>
               <div class="describe" :data-value='val.user.username' @click="author($event,key)">
@@ -31,9 +32,9 @@
 
 <script>
   import { getData } from '../../utils/request'
-  import store from '../author/store'
-  import Loading from '../../components/Loading'
-  import Login from '../../components/Login'
+import store from '../author/store'
+import Loading from '../../components/Loading'
+import Login from '../../components/Login'
 
 export default {
     data () {
@@ -43,6 +44,7 @@ export default {
         index: '',
         height: 0,
         time: 3,
+        setting: 0,
         paddingHeight: 0,
         page: 1,
         data: []
@@ -50,6 +52,14 @@ export default {
     },
 
     components: { Login, Loading },
+    onShow () {
+      wx.getStorage({
+        key: 'setting',
+        success: (res) => {
+          this.setting = res.data
+        }
+      })
+    },
     onLoad () {
       setInterval(() => {
         if (this.time) {
@@ -64,7 +74,16 @@ export default {
       async _getData (id) {
         let data = await getData(`index/${id}`, null, 'GET')
         if (data.error_code === 10000) {
+          let query = 60
+          if (typeof this.setting === 'undefined' || this.setting === 0) {
+            query = 40
+          } else if (this.setting === 2) {
+            query = 80
+          }
           data.data.map((item) => {
+            if (query !== 60) {
+              item.urls.small = item.urls.small.replace('60', query)
+            }
             this.data.push(item)
           })
           this.page++
@@ -76,12 +95,14 @@ export default {
           this._getData(this.page)
         }
       },
-      browser (e) {
+      browser (e, key) {
+        let id = this.data[key]['id']
         let path = e.currentTarget.dataset.value
         wx.previewImage({
           current: path,
           urls: [path]
         })
+        getData('like', { id: id, 'url': path, 'status': 0 }, 'POST')
       },
       author (e, key) {
         store.commit('setData', this.data[key]['user'])
@@ -90,8 +111,28 @@ export default {
         })
       },
       // 收藏
-      like (status) {
-        this.status = status
+      like (status, key) {
+        let url = this.data[key]['urls']['thumb']
+        let id = this.data[key]['id']
+        if (status) {
+          // 取消收藏
+          (async () => {
+            let data = await getData(`like/${this.id}`, '', 'DELETE')
+            if (data.error_code === 10000) {
+              this.data[key]['status'] = !status
+            }
+          })()
+        } else {
+          // 收藏
+          (async () => {
+            let data = await getData('like', { id: id, 'url': url, 'status': 1 }, 'POST')
+            if (data.error_code === 9999) {
+              this.status = true
+            } else if (data.error_code === 10000) {
+              this.data[key]['status'] = !status
+            }
+          })()
+        }
       },
       close () {
         this.status = false
@@ -134,8 +175,11 @@ export default {
     width:7rem;
     height:9rem;
     }
-  .like{width:35px;height:35px;position:absolute;top:10px;right:10px;background:rgba(0,0,0,0.5);border-radius:100%;display:flex}
+
+  .like{width:35px;height:35px;position:absolute;top:10px;right:10px;background:rgba(0, 0, 0, 0.5);border-radius:100%;display:flex}
+
   .like image{width:28px !important;height:28px !important;margin:auto}
+
   .item .describe{
     bottom:-1rem;
     opacity:0;

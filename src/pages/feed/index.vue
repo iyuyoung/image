@@ -52,6 +52,8 @@ export default {
         let data = await getData('feed', this.feed, 'POST')
         if (data.error_code === 10000) {
           this.feed.image = ''
+          this.feed.content = ''
+          this.images = []
           wx.showToast({
             title: '提交成功',
             icon: 'none'

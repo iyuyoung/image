@@ -1,39 +1,58 @@
 <template>
   <div class="main flex">
-    <Top title="我的足迹"></Top>
-    <scroll-view  scroll-y>
+    <Top :title="title"></Top>
+    <scroll-view  scroll-y v-if="!time">
       <div class="content">
-        <div class="item">
-          <image src="https://images.unsplash.com/photo-1550354520-86a81c515d44?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=350&q=20" lazy-load="true" mode="aspectFill"></image>
-        </div>
-        <div class="item">
-          <image src="https://images.unsplash.com/photo-1550537687-75d355fe0eb6?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=350&q=20" lazy-load="true" mode="aspectFill"></image>
-        </div>
-        <div class="item">
-          <image src="https://images.unsplash.com/photo-1550332781-aecd27f7434f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=350&q=20" lazy-load="true" mode="aspectFill"></image>
-        </div>
-        <div class="item">
-          <image src="https://images.unsplash.com/photo-1550528669-609a04ba67b9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=350&q=20" lazy-load="true" mode="aspectFill"></image>
-        </div>
-        <div class="item">
-          <image src="https://images.unsplash.com/photo-1550042384-1f83c1aaa981?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=350&q=20" lazy-load="true" mode="aspectFill"></image>
-        </div>
-        <div class="item">
-          <image src="https://images.unsplash.com/photo-1546593064-053d21199be1?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=350&q=20" lazy-load="true" mode="aspectFill"></image>
-        </div>
-        <div class="item">
-          <image src="https://images.unsplash.com/photo-1546593064-053d21199be1?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=350&q=20" lazy-load="true" mode="aspectFill"></image>
+        <div class="item" v-for="(val,key) in data">
+          <image :src="val.url" :data-index='key' lazy-load="true" mode="aspectFill"></image>
         </div>
     </div>
     </scroll-view>
+    <div class="no-data" v-else>
+      <loading></loading>
+    </div>
   </div>
 </template>
 
 <script>
   import Top from '../../components/Top'
+import { getData } from '../../utils/request'
+  import Loading from '../../components/Loading'
+
 export default {
     name: 'index',
-    components: { Top }
+    data () {
+      return {
+        status: 0,
+        data: {},
+        time: 3,
+        title: ''
+      }
+    },
+    components: { Loading, Top },
+    onLoad (option) {
+      setInterval(() => {
+        if (this.time) {
+          this.time--
+        }
+      }, 2000)
+      this.status = parseInt(option.id)
+      if (this.status) {
+        this.title = '我的收藏'
+      } else {
+        this.title = '我的足迹'
+      }
+      this._getData()
+    },
+    methods: {
+      async _getData () {
+        let data = await getData(`like/${this.status}`)
+        if (data.error_code === 10000) {
+          this.data = data.data.data
+          console.log(this.data)
+        }
+      }
+    }
   }
 </script>
 
@@ -51,5 +70,6 @@ export default {
           margin-bottom:2px;
           }
       }
+    .no-data{width:100%;height:100vh;display:flex;position:fixed;left:0px;}
     }
 </style>

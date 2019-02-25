@@ -1,6 +1,6 @@
 <template>
     <div class="layer"  v-if="status">
-      <div class="layer-bg"></div>
+      <div class="layer-bg" @click="close()"></div>
       <div class="login" :class="{'fadeInUp':ani,'fadeOutDown':!ani}">
         <div class="login-icon" @click="close()">
           <image src="../../static/image/icon_close.png"></image>

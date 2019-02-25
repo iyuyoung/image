@@ -11,17 +11,16 @@
             <open-data class="avatar-url" type="userAvatarUrl"></open-data>
           </div>
           <div class="userInfo">
-            <open-data type="userNickName"></open-data>
-            <span class="nickname">男</span>
+            <open-data type="userNickName" class="nickname"></open-data>
           </div>
         </div>
         <div class="server flex padding">
-          <div class="server-item" @click="open('list')">
-            <span>20</span>
+          <div class="server-item" @click="open('list',0)">
+            <span v-text="data.history"></span>
             <span>足迹</span>
           </div>
-          <div class="server-item" @click="open('list')">
-            <span>20</span>
+          <div class="server-item" @click="open('list',1)">
+            <span v-text="data.like"></span>
             <span>收藏</span>
           </div>
         </div>
@@ -45,22 +44,47 @@
         <image src="../../static/image/icon-right.png"></image>
       </div>
     </div>
+    <Login :status="status" @close_login="close"></Login>
   </div>
 </template>
 
 <script>
-  import {_NavigateTo} from '../../utils/index'
-  export default {
-    components: {},
+  import { _isNull, _NavigateTo } from '../../utils/index'
+  import {getData} from '../../utils/request'
+  import Login from '../../components/Login'
+export default {
+    components: { Login },
 
     data () {
       return {
-        logs: []
+        token: '',
+        status: false,
+        data: {'history': 0, 'like': 0}
       }
     },
+    onLoad () {
+      this._getData()
+    },
+    onShow () {
+      this.token = wx.getStorageSync('token')
+      this._getData()
+    },
     methods: {
-      open (path) {
-        _NavigateTo(path)
+      async _getData () {
+        let data = await getData(`user/1`, '')
+        if (data.error_code === 10000) {
+          this.data = data.data
+        }
+      },
+      open (path, id) {
+        if (_isNull(this.token)) {
+          this.status = true
+          return false
+        }
+        _NavigateTo(path, id)
+      },
+      close () {
+        this.status = false
       }
     },
     created () {
@@ -89,6 +113,7 @@
           .avatar-url{width:1.2rem;height:1.2rem;margin:auto;border-radius:100%;box-shadow:0px 1px 5px rgba(0, 0, 0, 0.1)}
           }
         .userInfo{width:4rem;display:flex;flex-wrap:wrap;align-content:center;padding-left:5px;
+          .nickname{line-height:60px;font-size:18px;}
           span{width:100%;display:flex;font-size:16px;box-sizing:border-box}
           &:last-child{font-size:14px;color:#ccc;}
           }

@@ -12,15 +12,17 @@
 
 <script>
   import Top from '../../components/Top'
+  import { _setStorage } from '../../utils'
 export default {
     name: 'index',
     components: { Top },
     methods: {
       setting () {
         wx.showActionSheet({
-          itemList: ['A', 'B', 'C'],
+          itemList: ['普通', '清晰', '超清'],
           success (res) {
             console.log(res.tapIndex)
+            _setStorage('setting', res.tapIndex)
           },
           fail (res) {
             console.log(res.errMsg)
