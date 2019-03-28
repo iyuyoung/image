@@ -1,0 +1,246 @@
+.fixed {
+  position: fixed
+  }
+
+.background {
+  background: #30e3ca !important;
+  }
+
+.color {
+  color: #30e3ca !important;
+  }
+
+.no-padding-bottom{padding-bottom:0px !important;}
+
+/*基础样式*/
+.show {
+  display: block !important
+  }
+
+.hide {
+  display: none;
+  }
+
+/*颜色*/
+.skin-color {
+  color: #30e3ca;
+  }
+
+.skin-bg-color {
+  background: #30e3ca
+  }
+
+.total {
+  z-index: 999999;
+  margin: auto;
+  padding: .3rem;
+  border-radius: 5px;
+  background: rgba(0, 0, 0, .8);
+  color: #FFF;
+  text-align: center;
+  font-size: 14px;
+  }
+
+.flex {
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
+  flex-wrap: wrap;
+  }
+
+.padding {
+  padding: 0.25rem;
+  }
+
+/*弹出层*/
+.layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999999;
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  }
+
+.layer-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba(0, 0, 0, .5);
+  }
+
+.center {
+  position: initial;
+  z-index: 99999999;
+  display: flex;
+  margin: auto;
+  width: 6.3rem;
+  border-radius: 4px;
+  background: #fff;
+  flex-wrap: wrap;
+  }
+
+/* 遮罩层*/
+.background {
+  position: relative
+  }
+
+.background:before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  background-color: transparent;
+  background: -webkit-gradient(linear, left top, left bottom, from(transparent), to(#000));
+  background: -webkit-linear-gradient(top, transparent, #000);
+  background: -moz-linear-gradient(top, transparent, #000);
+  background: -ms-linear-gradient(top, transparent, #000);
+  opacity: .5;
+  -webkit-transition: all 1s;
+  -moz-transition: all 1s;
+  transition: all 1s;
+  }
+
+/*动画效果*/
+@-webkit-keyframes zoomIn{
+  0%{
+    opacity:0;
+    -webkit-transform:scale3d(.3, .3, .3);
+    transform:scale3d(.3, .3, .3)
+    }
+
+  50%{
+    opacity:1
+    }
+  }
+
+@keyframes zoomIn{
+  0%{
+    -webkit-transform:scale3d(.3, .3, .3);
+    transform:scale3d(.3, .3, .3)
+    }
+
+  50%{
+    opacity:1
+    }
+  }
+
+.zoomIn{
+  -webkit-animation-name:zoomIn;
+  animation-name:zoomIn
+  }
+
+@-webkit-keyframes zoomOut{
+  0%{
+    opacity:1
+    }
+
+  50%{
+    -webkit-transform:scale3d(.3, .3, .3);
+    transform:scale3d(.3, .3, .3)
+    }
+
+  50%, to{
+    opacity:0
+    }
+  }
+
+@keyframes zoomOut{
+  0%{
+    opacity:1
+    }
+
+  50%{
+    -webkit-transform:scale3d(.3, .3, .3);
+    transform:scale3d(.3, .3, .3)
+    }
+
+  50%, to{
+    opacity:0
+    }
+  }
+
+.zoomOut{
+  -webkit-animation-duration:.5s;
+  animation-duration:.5s;
+  -webkit-animation-fill-mode:both;
+  animation-fill-mode:both;
+  -webkit-animation-name:zoomOut;
+  animation-name:zoomOut
+  }
+
+
+@-webkit-keyframes fadeInUp {
+  from {
+    opacity: 0;
+    -webkit-transform: translate3d(0, 100%, 0);
+    transform: translate3d(0, 100%, 0);
+    }
+
+  to {
+    opacity: 1;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+    }
+  }
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    -webkit-transform: translate3d(0, 100%, 0);
+    transform: translate3d(0, 100%, 0);
+    }
+
+  to {
+    opacity: 1;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+    }
+  }
+
+.fadeInUp {
+  -webkit-animation-name: fadeInUp;
+  animation-name: fadeInUp;
+  -webkit-animation-duration:.25s;
+  animation-duration:.25s;
+  -webkit-animation-fill-mode:both;
+  animation-fill-mode:both;
+  }
+
+@-webkit-keyframes fadeOutDown {
+  from {
+    opacity: 1;
+    }
+
+  to {
+    opacity: 0;
+    -webkit-transform: translate3d(0, 100%, 0);
+    transform: translate3d(0, 100%, 0);
+    }
+  }
+
+@keyframes fadeOutDown {
+  from {
+    opacity: 1;
+    }
+
+  to {
+    opacity: 0;
+    -webkit-transform: translate3d(0, 100%, 0);
+    transform: translate3d(0, 100%, 0);
+    }
+  }
+
+.fadeOutDown {
+  -webkit-animation-name: fadeOutDown;
+  animation-name: fadeOutDown;
+  -webkit-animation-duration:.25s;
+  animation-duration:.25s;
+  -webkit-animation-fill-mode:both;
+  animation-fill-mode:both;
+  }
