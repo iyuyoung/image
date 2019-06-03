@@ -5,11 +5,32 @@
     </header>
     <div class="content flex">
       <!-- item -->
-      <div v-if="!time">
+      <div class="flex"
+           v-if="!time">
         <div class="item flex"
              v-for="(val,key) in data"
              :key="key">
-          <div class="author flex" :data-value="val.user.username" @click="author($event,key)">
+          <ad unit-id="adunit-d276b550be3a144f"
+              v-if="key===2"></ad>
+          <ad unit-id="adunit-b91c1cb9b293f052"
+              v-if="key===5"></ad>
+          <ad unit-id="adunit-ade4ac59067aeeb9"
+              v-if="key===10"></ad>
+          <ad unit-id="adunit-76e23695b1552a61"
+              v-if="key===15"></ad>
+          <ad unit-id="adunit-93e2ee2bb7eff037"
+              v-if="key===18"></ad>
+          <ad unit-id="adunit-d276b550be3a144f"
+              v-if="key>20&&key%5===0&&key<50"></ad>
+          <ad unit-id="adunit-b91c1cb9b293f052"
+              v-if="key>50&&key%4===0&&key<80"></ad>
+          <ad unit-id="adunit-76e23695b1552a61"
+              v-if="key>80&&key%3===0&&key<150"></ad>
+          <ad unit-id="adunit-93e2ee2bb7eff037"
+              v-if="key>150&&key%2===0"></ad>
+          <div class="author flex"
+               :data-value="val.user.username"
+               @click="author($event,key)">
             <image :src="val.user.profile_image.small"></image>
             <span v-text="val.user.name"></span>
           </div>
@@ -17,7 +38,7 @@
                :style="{height:750/val.width*val.height/2+'px'}">
             <image :src="val.urls.small"
                    :style="{background:val.color,height:750/val.width*val.height/2+'px'}"
-                   mode="aspectFill" 
+                   mode="aspectFill"
                    :data-value="val.urls.small"
                    @click="browser($event,key)"></image>
           </div>
@@ -28,10 +49,12 @@
                 <image src="../../static/image/icon_like.png"></image>
                 <span v-text="val.likes"></span>
               </div>
-              <!-- <div class="share icon"
-                   @click="share(key)">
+              <div class="share icon">
+                <button plain="true"
+                        open-type="share"
+                        :data-image="val.urls.thumb"></button>
                 <image src="../../static/image/icon_share.png"></image>
-              </div> -->
+              </div>
             </div>
             <div class="download icon"
                  @click="download(key)">
@@ -50,7 +73,8 @@
         <image src="../../static/image/load-more.svg"></image>
       </div>
     </div>
-    <Login :status="status" @close_login="close"></Login>
+    <Login :status="status"
+           @close_login="close"></Login>
   </div>
 </template>
 
@@ -180,7 +204,33 @@ export default {
                     icon: 'success', // 图标,
                     duration: 2000, // 延迟时间,
                     mask: true, // 显示透明蒙层，防止触摸穿透,
-                    success: res => {}
+                    success: res => {
+                      // 在页面中定义插屏广告
+                      let interstitialAd = null
+
+                      // 在页面onLoad回调事件中创建插屏广告实例
+                      if (wx.createInterstitialAd) {
+                        interstitialAd = wx.createInterstitialAd({
+                          adUnitId: 'adunit-bec6635a6f3ac770'
+                        })
+                        interstitialAd.onLoad((err) => {
+                          console.log(err)
+                        })
+                        interstitialAd.onError((err) => {
+                          console.log(err)
+                        })
+                        interstitialAd.onClose((err) => {
+                          console.log(err)
+                        })
+                      }
+
+                      // 在适合的场景显示插屏广告
+                      if (interstitialAd) {
+                        interstitialAd.show().catch((err) => {
+                          console.error(err)
+                        })
+                      }
+                    }
                   })
                 }
               },
@@ -232,7 +282,7 @@ export default {
                 icon: 'none', // 图标,
                 duration: 2000, // 延迟时间,
                 mask: true, // 显示透明蒙层，防止触摸穿透,
-                success: res => {}
+                success: res => { }
               })
             } else {
               let url = `https://download.0558web.com${res.data.data}`
@@ -253,7 +303,7 @@ export default {
         icon: 'loading', // 图标,
         duration: 2000, // 延迟时间,
         mask: true, // 显示透明蒙层，防止触摸穿透,
-        success: res => {}
+        success: res => { }
       })
       this._remoteUrl(url)
     },
@@ -265,7 +315,13 @@ export default {
     this._getData(this.page)
   },
   onPullDownRefresh: function () { },
-  onShareAppMessage: function () {
+  onShareAppMessage: function (e) {
+    if (e.from === 'button') {
+      return {
+        'title': '',
+        'imageUrl': e.target.dataset.image
+      }
+    }
   }
 }
 </script>
@@ -299,6 +355,9 @@ export default {
     width: 7.5rem;
     .item {
       padding-bottom: 25px;
+      ad {
+        margin-bottom: 25px;
+      }
       .author {
         height: 1rem;
         line-height: 1rem;
@@ -367,6 +426,15 @@ export default {
           .share {
             display: flex;
             margin-left: 15px;
+            position: relative;
+            button {
+              width: 100%;
+              border: none;
+              height: 30px;
+              position: absolute;
+              left: 0px;
+              top: 0px;
+            }
           }
         }
         .download {
