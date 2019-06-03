@@ -55,16 +55,16 @@
                class="icon"></image>
       </div>
       <div class="item flex"
-           @click="openAd">
-        <image src="../../static/image/icon_love.png"></image>
-        <span>观看视频</span>
+           @click="pay">
+        <image src="../../static/image/icon_vip.png"></image>
+        <span>打赏作者</span>
         <image src="../../static/image/icon-right.png"
                class="icon"></image>
       </div>
       <div class="item flex"
-           @click="pay">
-        <image src="../../static/image/icon_vip.png"></image>
-        <span>打赏作者</span>
+           @click="openAd">
+        <image src="../../static/image/icon_love.png"></image>
+        <span>观看视频(获得永久下载资格)</span>
         <image src="../../static/image/icon-right.png"
                class="icon"></image>
       </div>
@@ -128,6 +128,7 @@ export default {
           adUnitId: 'adunit-2a4ed833cfdadac2'
         })
         videoAd.onLoad(() => {
+          console.log('视频加载成功')
         })
         videoAd.onError(() => {
           wx.showToast({
@@ -138,7 +139,26 @@ export default {
             success: res => { }
           })
         })
-        videoAd.onClose((res) => { })
+        videoAd.onClose((res) => {
+          if ((res && res.isEnded) || res === undefined) {
+            wx.showToast({
+              title: '已获得',
+              icon: 'none',
+              duration: 1500,
+              mask: true,
+              success: res => { }
+            })
+          } else {
+            // 播放中途退出，不下发游戏奖励
+            wx.showToast({
+              title: '暂未获得',
+              icon: 'none',
+              duration: 1500,
+              mask: true,
+              success: res => { }
+            })
+          }
+        })
       }
 
       // 用户触发广告后，显示激励视频广告
