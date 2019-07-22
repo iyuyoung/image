@@ -3,7 +3,8 @@
     <header :style="{'height':height+'px','padding-top':paddingHeight+'px'}">
       <image src="../../static/image/unsplash_logo.png"></image>
     </header>
-    <div class="content flex">
+    <div class="content flex"
+         :style="{'padding-top':height+'px'}">
       <!-- item -->
       <div class="flex"
            v-if="!time">
@@ -31,7 +32,8 @@
           <div class="author flex"
                :data-value="val.user.username"
                @click="author($event,key)">
-            <image :src="val.user.profile_image.small"></image>
+            <image :src="val.user.profile_image.small"
+                   lazy-load="true"></image>
             <span v-text="val.user.name"></span>
           </div>
           <div class="item-image flex"
@@ -39,6 +41,7 @@
             <image :src="val.urls.small"
                    :style="{background:val.color,height:750/val.width*val.height/2+'px'}"
                    mode="aspectFill"
+                   lazy-load="true"
                    :data-value="val.urls.small"
                    @click="browser($event,key)"></image>
           </div>
@@ -75,6 +78,33 @@
     </div>
     <Login :status="status"
            @close_login="close"></Login>
+
+    <!-- 确认下载 -->
+    <div class="layer"
+         v-if="layer.download">
+      <div class="layer-bg"></div>
+      <div class="center download flex">
+        <div class="image">
+          <image :src="layer.download"
+                 mode="aspectFill"></image>
+        </div>
+        <div class="thanks flex">
+          <h3>Say thanks</h3>
+          <span>Crediting isn’t required, but is appreciated and allows photographers to gain embed a credit badge.</span>
+          <span>Photo by {{layer.user}} on Unsplash</span>
+          <span>图片高清无压缩,请注意手机流量使用情况</span>
+        </div>
+        <div class="layer-footer flex">
+          <span class="loader">下载中...</span>
+        </div>
+      </div>
+      <div class="layer-close flex">
+        <i @click="layer.download=false">
+          <image src="../../static/image/icon_close.png"></image>
+        </i>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -83,21 +113,18 @@ import { getData } from '../../utils/request'
 import store from '../author/store'
 import Loading from '../../components/Loading'
 import Login from '../../components/Login'
-// import card from '../../utils/card'
-// let data = {'name': '爱狗极'}
-// card.do(data)
 export default {
   data () {
     return {
       current: 0,
       status: false,
+      layer: { 'download': false, 'user': '' },
       index: '',
       height: 0,
       time: 2,
       setting: 0,
       paddingHeight: 0,
       page: 1,
-      temp: 'card._template()',
       data: []
     }
   },
@@ -117,7 +144,7 @@ export default {
         this.time--
       }
     }, 1000)
-    this.height = this.TOP + 50
+    this.height = this.TOP + 44
     this.paddingHeight = this.TOP
     this._getData(this.page)
   },
@@ -194,7 +221,6 @@ export default {
         url: url,
         success: (res) => {
           if (res.statusCode === 200) {
-            console.log(res.tempFilePath)
             wx.saveImageToPhotosAlbum({
               filePath: res.tempFilePath,
               success: (res) => {
@@ -205,6 +231,7 @@ export default {
                     duration: 2000, // 延迟时间,
                     mask: true, // 显示透明蒙层，防止触摸穿透,
                     success: res => {
+                      this.layer.download = false
                       // 在页面中定义插屏广告
                       let interstitialAd = null
 
@@ -236,7 +263,7 @@ export default {
               },
               fail: (res) => {
                 console.log(res)
-                if (res.errMsg === 'saveImageToPhotosAlbum:fail auth deny') {
+                if (res.errMsg === 'saveImageToPhotosAlbum:fail auth deny' || res.errMsg === 'saveImageToPhotosAlbum:fail authorize no response') {
                   wx.authorize({
                     scope: 'scope.writePhotosAlbum',
                     success () {
@@ -245,7 +272,7 @@ export default {
                     // eslint-disable-next-line handle-callback-err
                     fail (error) {
                       wx.showModal({
-                        content: '保存图片到你的相册',
+                        content: '"Unsplash助手" 需要保存图片到你的相册',
                         showCancel: false,
                         success: (res) => {
                           wx.openSetting({
@@ -282,7 +309,9 @@ export default {
                 icon: 'none', // 图标,
                 duration: 2000, // 延迟时间,
                 mask: true, // 显示透明蒙层，防止触摸穿透,
-                success: res => { }
+                success: res => {
+                  this.layer.download = false
+                }
               })
             } else {
               let url = `https://download.0558web.com${res.data.data}`
@@ -297,14 +326,9 @@ export default {
     // 下载远程链接
     download (key) {
       let small = this.data[key]['urls']['small']
+      this.layer.user = this.data[key]['user']['name']
+      this.layer.download = small
       let url = new RegExp('(photo-.*?=)').exec(small)[0].replace('?ixlib=', '')
-      wx.showToast({
-        title: '下载中', // 提示的内容,
-        icon: 'loading', // 图标,
-        duration: 2000, // 延迟时间,
-        mask: true, // 显示透明蒙层，防止触摸穿透,
-        success: res => { }
-      })
       this._remoteUrl(url)
     },
     close () {
@@ -337,21 +361,18 @@ export default {
     background: #fff;
     position: fixed;
     box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.05);
-    left: 0px;
     top: 0px;
     display: flex;
     box-sizing: border-box;
     z-index: 9999;
     image {
       width: 100px;
-      margin-left: 10px;
       height: 25px;
-      margin-top: 15px;
+      margin: auto 5px;
     }
   }
 
   .content {
-    margin-top: 70px;
     width: 7.5rem;
     .item {
       padding-bottom: 25px;
@@ -465,6 +486,125 @@ export default {
     width: 100%;
     height: 10rem;
     display: flex;
+  }
+  .layer {
+    flex-wrap: wrap;
+    align-content: center;
+    .download {
+      border-radius: 5px;
+      .image {
+        width: 6.3rem;
+        height: 200px;
+        display: flex;
+        image {
+          width: 100%;
+          height: 200px;
+          margin: auto;
+          border-radius: 5px 5px 0px 0px;
+        }
+      }
+    }
+    .thanks {
+      width: 100%;
+      padding: 0.25rem;
+      flex-wrap: wrap;
+      h3 {
+        font-size: 18px;
+        font-weight: 500;
+      }
+      span {
+        width: 100%;
+        font-size: 14px;
+        color: #333;
+        margin: 3px 0px;
+        &:last-child {
+          font-size: 12px;
+          color: #ccc;
+        }
+      }
+    }
+    .layer-footer {
+      font-size: 14px;
+      justify-content: center;
+      line-height: 40px;
+      color: #000;
+      position: relative;
+      span {
+        &::before {
+          content: "";
+          position: absolute;
+          width: 0px;
+          height: 3px;
+          background: #000;
+          left: 0px;
+          bottom: 0px;
+          -webkit-animation: loader 30s ease-in-out;
+          animation: loader 30s ease-in-out;
+        }
+        @-webkit-keyframes loader {
+          0% {
+            width: 0px;
+          }
+          48% {
+            width: 50%;
+          }
+          50% {
+            width: 60%;
+            right: 0px;
+          }
+          52% {
+            width: 70%;
+            right: 0px;
+          }
+          100% {
+            width: 98%;
+            right: 0px;
+          }
+        }
+
+        @keyframes loader {
+          0% {
+            width: 0px;
+          }
+          48% {
+            width: 50%;
+          }
+          50% {
+            width: 60%;
+            right: 0px;
+          }
+          52% {
+            width: 70%;
+            right: 0px;
+          }
+          100% {
+            width: 98%;
+            right: 0px;
+          }
+        }
+      }
+    }
+    .layer-close {
+      position: initial;
+      z-index: 99999999999;
+      height: 40px;
+      margin-top: 10px;
+
+      i {
+        height: 30px;
+        margin-top: 10px;
+        margin: auto;
+        border-radius: 100%;
+        border: 2px solid #fff;
+        width: 30px;
+        display: flex;
+        image {
+          width: 25px;
+          height: 25px;
+          margin: auto;
+        }
+      }
+    }
   }
 }
 </style>

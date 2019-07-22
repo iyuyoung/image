@@ -5,7 +5,6 @@
     "pages/choice/main",
     "pages/setting/main",
     "pages/user/main",
-    "pages/feed/main",
     "pages/author/main"
   ],
   "window": {

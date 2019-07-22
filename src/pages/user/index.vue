@@ -1,6 +1,7 @@
 <template>
   <div class="main">
-    <div class="header">
+    <div class="header"
+         :style="{'padding-top':height+'px'}">
       <image src="../../static/image/unsplash_logo_white.png"></image>
     </div>
     <header>
@@ -33,7 +34,7 @@
     </header>
     <div class="content flex">
       <div class="item flex"
-           @click="open('setting',0)">
+           @click="openSetting('setting')">
         <image src="../../static/image/icon-setting.png"></image>
         <span>设置</span>
         <image src="../../static/image/icon-right.png"
@@ -47,8 +48,9 @@
         <image src="../../static/image/icon-right.png"
                class="icon"></image>
       </div>
-      <div class="item flex"
-           @click="open('feed',0)">
+      <div class="item flex">
+        <button plain="true"
+                open-type="feedback"></button>
         <image src="../../static/image/icon-feed.png"></image>
         <span>问题反馈</span>
         <image src="../../static/image/icon-right.png"
@@ -62,7 +64,8 @@
                class="icon"></image>
       </div>
       <div class="item flex"
-           @click="openAd">
+           @click="openAd"
+           v-if="data.ad">
         <image src="../../static/image/icon_love.png"></image>
         <span>观看视频(获得永久下载资格)</span>
         <image src="../../static/image/icon-right.png"
@@ -75,7 +78,7 @@
 </template>
 
 <script>
-import { _isNull, _NavigateTo } from '../../utils/index'
+import { _NavigateTo } from '../../utils/index'
 import { getData } from '../../utils/request'
 import Login from '../../components/Login'
 export default {
@@ -85,13 +88,15 @@ export default {
     return {
       token: '',
       status: false,
-      data: { 'history': 0, 'like': 0 }
+      height: 20,
+      data: { 'history': 0, 'like': 0, 'ad': false }
     }
   },
   onLoad () {
     this._getData()
   },
   onShow () {
+    this.height = this.TOP
     this.token = wx.getStorageSync('token')
     this._getData()
   },
@@ -100,14 +105,19 @@ export default {
       let data = await getData(`user/1`, '')
       if (data.error_code === 10000) {
         this.data = data.data
+      } else {
+        this.data.ad = data.data
       }
     },
     open (path, id) {
-      if (_isNull(this.token)) {
+      if (wx.getStorageSync('token')) {
+        _NavigateTo(path, id)
+      } else {
         this.status = true
-        return false
       }
-      _NavigateTo(path, id)
+    },
+    openSetting (path) {
+      _NavigateTo(path, 0)
     },
     close () {
       this.status = false
@@ -186,21 +196,17 @@ export default {
   background: rgba(244, 244, 244, 0.5);
   .header {
     width: 100%;
-    background: #00d8a0;
     position: fixed;
-    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.05);
     left: 0px;
     top: 0px;
     display: flex;
-    box-sizing: border-box;
+    box-sizing: none;
     z-index: 9999;
-    height: 70px;
-    padding-top: 20px;
+    height: 44px;
     image {
       width: 100px;
       height: 25px;
-      margin-top: 15px;
-      margin-left: 10px;
+      margin: auto 5px;
     }
   }
   header {
@@ -210,9 +216,11 @@ export default {
     position: relative;
     .header-bg {
       width: 100%;
-      height: 4rem;
+      height: 240px;
       display: flex;
-      background: #00d8a0;
+      background: url("http://cdn.mphot.cn//uploads/user-bg.jpeg?imageView2/0/format/jpg/q/80");
+      background-repeat: center;
+      background-size: 100%;
       image {
         width: 100%;
         height: 4rem;
@@ -226,7 +234,7 @@ export default {
       box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.15);
       position: absolute;
       left: 0.35rem;
-      top: 2rem;
+      top: 2.5rem;
       border-radius: 3px;
       box-sizing: border-box;
       flex-wrap: wrap;
@@ -322,7 +330,7 @@ export default {
   }
   .content {
     flex-wrap: wrap;
-    margin-top: 75px;
+    margin-top: 50px;
     width: 7.5rem;
     padding: 0px 0.35rem;
     box-sizing: border-box;

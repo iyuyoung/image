@@ -18,7 +18,7 @@
       </div>
       <div class="login-footer">
         <button plain="true"
-                lang="en"
+                lang="zh_CN"
                 @click="login"
                 open-type="getUserInfo">登陆</button>
       </div>
@@ -42,8 +42,7 @@ export default {
       let data = await getData('login', { 'encryptedData': encryptedData, 'iv': iv, 'code': code }, 'POST')
       if (data.error_code === 10000) {
         _setStorage('token', data.token)
-        this.ani = false
-        this.status = false
+        this.close()
         setTimeout(() => {
 
         }, 200)
@@ -76,6 +75,7 @@ export default {
       this.$emit('close_login')
     },
     login () {
+      console.log(111111)
       this._getCode()
     }
   }
@@ -85,7 +85,7 @@ export default {
 <style lang="less" scoped>
 .login {
   width: 100%;
-  height: 60vh;
+  height: 40vh;
   position: fixed;
   left: 0px;
   bottom: 0px;
@@ -94,7 +94,7 @@ export default {
   align-content: flex-start;
   background: #ffffff;
   box-sizing: border-box;
-  padding: 2rem 20px;
+  padding: 0.8rem 20px;
   .login-icon {
     position: absolute;
     width: 1rem;
@@ -112,8 +112,8 @@ export default {
     width: 100%;
     display: flex;
     image {
-      width: 180px;
-      height: 49px;
+      width: 3.66rem;
+      height: 50px;
       margin: auto;
     }
   }

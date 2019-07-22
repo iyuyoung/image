@@ -1,12 +1,21 @@
 <template>
   <div class="main">
-    <div class="header">
+    <div class="header"
+         :style="{'margin-top':height+'px'}">
       <div class="back"
-           @click="back">
-        <image src="../../static/image/icon_left.png"></image>
+           :style="{'top':paddingHeight+'px'}">
+        <i @click="back">
+          <image src="../../static/image/icon_index.png"></image>
+        </i>
+        <i>
+          <button plain="true"
+                  open-type="share"></button>
+          <image src="../../static/image/icon_share_white.png"></image>
+        </i>
       </div>
       <div class="header-bg">
-        <image :src="image"></image>
+        <image :src="image"
+               lazy-load="true"></image>
       </div>
       <div class="header-detail">
         <div class="info">
@@ -42,6 +51,7 @@
         <ad unit-id="adunit-ade4ac59067aeeb9"
             v-if="key===5"></ad>
         <image :src="val.urls.small"
+               lazy-load="true"
                @click="look(val.urls.small)"
                mode="aspectFill"></image>
       </div>
@@ -67,6 +77,8 @@ export default {
       color: '#ccc',
       data: [],
       user: [],
+      height: 20,
+      paddingHeight: 0,
       page: 1
     }
   },
@@ -101,6 +113,9 @@ export default {
     this.page = 1
     this.data = []
     this.user = store.state.data
+    this.height = this.TOP + 44
+    this.paddingHeight = this.TOP + 9
+    console.log(this.paddingHeight)
     this._getData(option.username)
   },
   methods: {
@@ -130,6 +145,14 @@ export default {
   },
   onReachBottom: function () {
     console.log(this.page++)
+  },
+  onShareAppMessage: function (e) {
+    if (e.from === 'button') {
+      return {
+        'title': this.user.name,
+        'imageUrl': this.data[0].urls.small
+      }
+    }
   }
 }
 </script>
@@ -148,22 +171,49 @@ ad {
   display: flex;
   flex-wrap: wrap;
   box-sizing: border-box;
-  margin-top: 60px;
 }
 .back {
-  width: 0.75rem;
-  height: 0.5rem;
-  background: rgba(0, 0, 0, 0.35);
-  border-radius: 0px 20px 20px 0px;
-  position: fixed;
-  top: 0.55rem;
-  left: 0px;
+  width: 1.55rem;
+  background: rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  height: 0.56rem;
   display: flex;
-  z-index: 99999;
+  border-radius: 40px;
+  position: fixed;
+  z-index: 999;
+  top: 0.53rem;
+  left: 10px;
+  padding: 0px 3px;
 }
-.back image {
-  width: 0.45rem;
-  height: 0.45rem;
+.header i {
+  display: flex;
+  position: relative;
+  margin: auto;
+  width: 30px;
+  height: 0.56rem;
+}
+.header i:first-child::before {
+  content: "";
+  position: absolute;
+  width: 1px;
+  height: 15px;
+  background: rgba(255, 255, 255, 0.4);
+  right: -0.0575rem;
+  top: 6.5px;
+}
+.header i button {
+  border: none;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  z-index: 9999;
+  width: 30px;
+  height: 0.55rem;
+}
+
+.header i image {
+  width: 0.32rem;
+  height: 0.32rem;
   margin: auto;
 }
 
@@ -192,7 +242,7 @@ ad {
   background: #fff;
   padding: 15px;
   border-radius: 5px;
-  margin-top: 0.5rem;
+  margin-top: 0.1rem;
   -webkit-box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
   -moz-box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
   box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
