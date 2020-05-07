@@ -4,6 +4,7 @@
     "pages/list/main",
     "pages/choice/main",
     "pages/setting/main",
+    "pages/search/main",
     "pages/user/main",
     "pages/author/main"
   ],
@@ -12,6 +13,7 @@
     "navigationBarBackgroundColor": "#fff",
     "navigationStyle": "custom",
     "navigationBarTitleText": "unsplash",
+    "enablePullDownRefresh": true,
     "navigationBarTextStyle": "black"
   },
   "tabBar": {

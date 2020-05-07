@@ -41,7 +41,7 @@ export default {
     async _getLogin (encryptedData, iv, code) {
       let data = await getData('login', { 'encryptedData': encryptedData, 'iv': iv, 'code': code }, 'POST')
       if (data.error_code === 10000) {
-        _setStorage('token', data.token)
+        _setStorage('token', data.data)
         this.close()
         setTimeout(() => {
 
@@ -75,7 +75,6 @@ export default {
       this.$emit('close_login')
     },
     login () {
-      console.log(111111)
       this._getCode()
     }
   }
@@ -91,7 +90,7 @@ export default {
   bottom: 0px;
   display: flex;
   flex-wrap: wrap;
-  align-content: flex-start;
+  align-content: center;
   background: #ffffff;
   box-sizing: border-box;
   padding: 0.8rem 20px;
@@ -113,7 +112,7 @@ export default {
     display: flex;
     image {
       width: 3.66rem;
-      height: 50px;
+      height: 45px;
       margin: auto;
     }
   }
@@ -130,9 +129,10 @@ export default {
       width: 5rem;
       height: 1rem;
       line-height: 1rem;
-      background: #30e3ca;
+      background: #000000;
       color: #ffffff;
-      font-size: 15px;
+      font-size: 16px;
+      font-weight: 500;
       border-radius: 3px;
       border: none;
     }

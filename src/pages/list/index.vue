@@ -1,22 +1,21 @@
 <template>
   <div class="main flex">
     <Top :title="title"></Top>
-    <scroll-view scroll-y
-                 v-if="!time">
+    <scroll-view scroll-y v-if="data">
       <div class="content">
-        <div class="item"
-             v-for="(val,key) in data"
-             :key="key">
-          <image :src="val.url"
-                 :data-index='key'
-                 lazy-load="true"
-                 mode="aspectFill"></image>
+        <div class="item" v-for="(val, key) in data" :key="key">
+          <image
+            :src="val.image"
+            :data-index="key"
+            lazy-load="true"
+            @click="browser(val.image)"
+            mode="aspectFill"
+          ></image>
         </div>
       </div>
       <ad unit-id="adunit-ade4ac59067aeeb9"></ad>
     </scroll-view>
-    <div class="no-data"
-         v-else>
+    <div class="no-data" v-else>
       <loading></loading>
     </div>
   </div>
@@ -32,7 +31,7 @@ export default {
   data () {
     return {
       status: 0,
-      data: {},
+      data: [],
       time: 3,
       title: ''
     }
@@ -54,11 +53,16 @@ export default {
   },
   methods: {
     async _getData () {
-      let data = await getData(`like/${this.status}`)
-      if (data.error_code === 10000) {
-        this.data = data.data.data
+      let res = await getData(`like/${this.status}`)
+      if (res.error_code === 10000) {
+        this.data = res.data
         console.log(this.data)
       }
+    },
+    browser (image) {
+      wx.previewImage({
+        urls: [image]
+      })
     }
   }
 }
@@ -66,17 +70,26 @@ export default {
 
 <style lang="less" scoped>
 .main {
-  .content {
+  scroll-view {
     width: 100%;
-    box-sizing: border-box;
-    column-count: 2;
-    column-gap: 2px;
-    .item {
-      display: flex;
+    height: 100vh;
+    .content {
       width: 100%;
-      margin-bottom: 2px;
+      box-sizing: border-box;
+      .item {
+        display: flex;
+        width: 100%;
+        margin-top: 12px;
+        padding: 0px 0.25rem;
+        box-sizing: border-box;
+        image {
+          width: 100%;
+          border-radius: 3px;
+        }
+      }
     }
   }
+
   .no-data {
     width: 100%;
     height: 100vh;

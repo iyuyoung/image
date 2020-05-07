@@ -21,12 +21,12 @@
         <div class="server flex padding">
           <div class="server-item"
                @click="open('list',0)">
-            <span v-text="data.history"></span>
+            <span v-text="data.footprint"></span>
             <span>足迹</span>
           </div>
           <div class="server-item"
                @click="open('list',1)">
-            <span v-text="data.like"></span>
+            <span v-text="data.number"></span>
             <span>收藏</span>
           </div>
         </div>
@@ -42,23 +42,15 @@
       </div>
       <div class="item flex">
         <button plain="true"
-                open-type="contact"></button>
-        <image src="../../static/image/icon-kefu.png"></image>
-        <span>联系客服</span>
-        <image src="../../static/image/icon-right.png"
-               class="icon"></image>
-      </div>
-      <div class="item flex">
-        <button plain="true"
                 open-type="feedback"></button>
-        <image src="../../static/image/icon-feed.png"></image>
+        <image src="../../static/image/icon-chat.png"></image>
         <span>问题反馈</span>
         <image src="../../static/image/icon-right.png"
                class="icon"></image>
       </div>
       <div class="item flex"
            @click="pay">
-        <image src="../../static/image/icon_vip.png"></image>
+        <image src="../../static/image/icon-gift.png"></image>
         <span>打赏作者</span>
         <image src="../../static/image/icon-right.png"
                class="icon"></image>
@@ -89,7 +81,7 @@ export default {
       token: '',
       status: false,
       height: 20,
-      data: { 'history': 0, 'like': 0, 'ad': false }
+      data: { 'footprint': 0, 'number': 0, 'ad': false, 'background': '' }
     }
   },
   onLoad () {
@@ -102,7 +94,7 @@ export default {
   },
   methods: {
     async _getData () {
-      let data = await getData(`user/1`, '')
+      let data = await getData(`user`, '')
       if (data.error_code === 10000) {
         this.data = data.data
       } else {
@@ -125,7 +117,7 @@ export default {
     pay () {
       // 打赏
       wx.previewImage({
-        urls: ['http://petimg.inc66.com/uploads/20190316/pay.jpg']
+        urls: ['https://cdn.mphot.cn/pay.jpg']
       })
     },
     openAd () {
@@ -218,7 +210,7 @@ export default {
       width: 100%;
       height: 240px;
       display: flex;
-      background: url("http://cdn.mphot.cn//uploads/user-bg.jpeg?imageView2/0/format/jpg/q/80");
+      background: url("https://www.mphot.cn/uploads/20190425/photo-1565038930214-09566ed2149b.jpg?imageView2/0/format/jpg/q/80");
       background-repeat: center;
       background-size: 100%;
       image {

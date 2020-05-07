@@ -1,24 +1,6 @@
 <template>
   <div class="main">
-    <header
-      :style="{ height: height + 'px', 'padding-top': paddingHeight + 'px' }"
-    >
-      <input
-        type="search"
-        v-model="title"
-        placeholder-style="color:#d8d8d8"
-        confirm-type="search"
-        @confirm="search"
-        placeholder="China"
-      />
-      <i @click="search">
-        <image src="../../static/image/icon-search.png" mode="aspectFill" />
-      </i>
-    </header>
-    <div class="header-bg">
-      <image :src="image" lazy-load="true" mode="aspectFill"></image>
-    </div>
-    <scroll-view :style="{ 'padding-top': height + 'px' }">
+    <scroll-view>
       <div class="content">
         <!-- 列表 -->
         <div class="flex list">
@@ -127,9 +109,9 @@ export default {
       cdn: 'http://img.0558web.com',
       index: '',
       height: 0,
-      title: '',
       setting: 0,
       image: '',
+      title: '',
       background: [],
       layer: { download: false, user: '' },
       paddingHeight: 0,
@@ -140,18 +122,14 @@ export default {
 
   components: { Login },
   onShow () {
-    this.title = ''
-    wx.getStorage({
-      key: 'setting',
-      success: (res) => {
-        this.setting = res.data
-      }
-    })
+
   },
-  onLoad () {
-    this.height = this.TOP + 44
-    this.paddingHeight = this.TOP
-    // 在页面中定义插屏广告
+  onLoad (option) {
+    this.page = 1
+    this.list = []
+    wx.setNavigationBarTitle({ title: option.title })
+    this.title = option.title
+
     let interstitialAd = null
 
     // 在页面onLoad回调事件中创建插屏广告实例
@@ -179,21 +157,12 @@ export default {
   },
   methods: {
     async _getData () {
-      let res = await getData(`index?page=${this.page}&order_by=popular`)
+      let res = await getData(`search?title=${this.title}&page=${this.page}`)
       if (res.error_code === 10000) {
-        let query = 60
-        if (typeof this.setting === 'undefined' || this.setting === 0) {
-          query = 40
-        } else if (this.setting === 2) {
-          query = 80
-        }
         res.data.data.map((item) => {
-          if (query !== 60) {
-            item.urls.small = item.urls.small.replace('30', query)
-          }
           this.list.push(item)
         })
-        this.page = res.data.currentPage + 1
+        this.page = parseInt(res.data.page) + 1
         wx.stopPullDownRefresh()
       }
     },
@@ -209,7 +178,7 @@ export default {
         urls: [path]
       })
       this.list[key]['status'] = 2
-      getData('like', { id: id, url: path, status: 0 }, 'POST')
+      getData('like', { pid: id, url: path, status: 0 }, 'POST')
     },
     author (e, key) {
       store.commit('setData', this.list[key]['user'])
@@ -225,7 +194,7 @@ export default {
         (async () => {
           let data = await getData(
             'like',
-            { pid: id, url: url, status: 1 },
+            { id: id, url: url, status: 1 },
             'POST'
           )
           if (data.error_code === 10000) {
@@ -328,18 +297,10 @@ export default {
     },
     close () {
       this.status = false
-    },
-    search () {
-      if (!this.title) {
-        this.title = 'China'
-      }
-      wx.navigateTo({
-        url: `/pages/search/main?title=${this.title}`
-      })
     }
   },
   onReachBottom: function () {
-    this._getData(this.page)
+    this._getData()
   },
   onShareAppMessage: function (e) {
     if (e.from === 'button') {

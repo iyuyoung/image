@@ -20,7 +20,7 @@
       <div class="header-detail">
         <div class="info">
           <div class="avatar">
-            <image :src="user.profile_image['small']"></image>
+            <image :src="user.profile_image['medium']"></image>
           </div>
           <div class="message">
             <span class="nickname"
@@ -35,13 +35,12 @@
         </div>
         <div class="detail">
           <span class="describe"
-                v-text="user.bio===null?'No brief introduction':user.bio"></span>
+                v-text="user.bio?'No Unsplash brief introduction':user.bio"></span>
         </div>
       </div>
     </div>
 
-    <div class="content"
-         v-if="data.length">
+    <div class="content">
       <ad unit-id="adunit-d276b550be3a144f"></ad>
       <div class="item"
            v-for="(val,key) in data"
@@ -50,15 +49,14 @@
             v-if="key===3"></ad>
         <ad unit-id="adunit-ade4ac59067aeeb9"
             v-if="key===5"></ad>
-        <image :src="val.urls.small"
+        <ad unit-id="adunit-b1b35184ce7467f6"
+            v-if="key===18"></ad>
+        <image :src="val.urls.small" :style="{background:val.color,height:750/val.width*val.height/2+'px'}"
                lazy-load="true"
+               alt="Unsplash精选图片"
                @click="look(val.urls.small)"
                mode="aspectFill"></image>
       </div>
-    </div>
-    <div class="no-data"
-         v-else>
-      <loading></loading>
     </div>
   </div>
 </template>
@@ -73,7 +71,7 @@ export default {
   components: { Loading },
   data () {
     return {
-      image: '',
+      image: wx.getStorageSync('background'),
       color: '#ccc',
       data: [],
       user: [],
@@ -115,12 +113,11 @@ export default {
     this.user = store.state.data
     this.height = this.TOP + 44
     this.paddingHeight = this.TOP + 9
-    console.log(this.paddingHeight)
     this._getData(option.username)
   },
   methods: {
     async _getData (username) {
-      let data = await getData(`user?username=${username}&page=${this.page}`, null, 'GET')
+      let data = await getData(`author?username=${username}&page=${this.page}`)
       if (data.error_code === 10000) {
         data.data.map((item, key) => {
           this.data.push(item)
@@ -149,8 +146,8 @@ export default {
   onShareAppMessage: function (e) {
     if (e.from === 'button') {
       return {
-        'title': this.user.name,
-        'imageUrl': this.data[0].urls.small
+        'title': `${e.target.dataset.title} @ Photo by ${e.target.dataset.username} on Unsplash`,
+        'imageUrl': e.target.dataset.image
       }
     }
   }
@@ -176,7 +173,7 @@ ad {
   width: 1.55rem;
   background: rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.4);
-  height: 0.56rem;
+  height: 30px;
   display: flex;
   border-radius: 40px;
   position: fixed;
@@ -228,7 +225,7 @@ ad {
 .header-bg image {
   width: 100%;
   height: 5rem;
-  filter: blur(50px);
+  filter: blur(5px);
   box-shadow: (2px 2px 10px #ccc);
   position: absolute;
   left: 0px;

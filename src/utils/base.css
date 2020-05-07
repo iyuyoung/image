@@ -3,11 +3,11 @@
   }
 
 .background {
-  background: #30e3ca !important;
+  background: #000000 !important;
   }
 
 .color {
-  color: #30e3ca !important;
+  color: #000000 !important;
   }
 
 .no-padding-bottom{padding-bottom:0px !important;}
@@ -23,11 +23,11 @@
 
 /*颜色*/
 .skin-color {
-  color: #30e3ca;
+  color: #000000;
   }
 
 .skin-bg-color {
-  background: #30e3ca
+  background: #000000
   }
 
 .total {

@@ -5,9 +5,11 @@
     </header>
     <div class="content flex"
          :style="{'padding-top':height+'px'}">
+      <div class="title hide">
+        <span>Photo by {{data[0].user.name}} on Unsplash。 Unsplash官方图片实时同步更新 Unsplash精选图片、高清壁纸、Unsplash图片下载 Unsplash助手</span>
+      </div>
       <!-- item -->
-      <div class="flex"
-           v-if="!time">
+      <div class="flex">
         <div class="item flex"
              v-for="(val,key) in data"
              :key="key">
@@ -21,23 +23,27 @@
               v-if="key===15"></ad>
           <ad unit-id="adunit-93e2ee2bb7eff037"
               v-if="key===18"></ad>
-          <ad unit-id="adunit-d276b550be3a144f"
-              v-if="key>20&&key%5===0&&key<50"></ad>
+          <ad unit-id="adunit-a1caa0e1cc5bbd90"
+              v-if="key>20&&key%5===0&&key<40"></ad>
           <ad unit-id="adunit-b91c1cb9b293f052"
-              v-if="key>50&&key%4===0&&key<80"></ad>
+              v-if="key>40&&key%4===0&&key<60"></ad>
           <ad unit-id="adunit-76e23695b1552a61"
-              v-if="key>80&&key%3===0&&key<150"></ad>
-          <ad unit-id="adunit-93e2ee2bb7eff037"
-              v-if="key>150&&key%2===0"></ad>
+              v-if="key>60&&key%3===0&&key<80"></ad>
+          <ad unit-id="adunit-b1b35184ce7467f6"
+              v-if="key>80&&key%2===0"></ad>
           <div class="author flex"
                :data-value="val.user.username"
                @click="author($event,key)">
-            <image :src="val.user.profile_image.small"
+            <image :src="val.user.profile_image.medium"
                    lazy-load="true"></image>
             <span v-text="val.user.name"></span>
           </div>
           <div class="item-image flex"
                :style="{height:750/val.width*val.height/2+'px'}">
+            <div class="title"
+                 :style="{opacity:val.status===2?1:0}">
+              <span>{{val.alt_description?val.alt_description:''}} {{val.description?val.description:''}} Photo by {{val.user.name}} on Unsplash。 Unsplash官方图片实时同步更新 Unsplash精选图片、高清壁纸、Unsplash图片下载 Unsplash助手</span>
+            </div>
             <image :src="val.urls.small"
                    :style="{background:val.color,height:750/val.width*val.height/2+'px'}"
                    mode="aspectFill"
@@ -55,6 +61,8 @@
               <div class="share icon">
                 <button plain="true"
                         open-type="share"
+                        :data-username="val.user.name"
+                        :data-title="val.alt_description"
                         :data-image="val.urls.thumb"></button>
                 <image src="../../static/image/icon_share.png"></image>
               </div>
@@ -67,7 +75,7 @@
         </div>
       </div>
       <div class="no-data"
-           v-else>
+           v-if="time">
         <loading></loading>
       </div>
       <!-- loading -->
@@ -120,6 +128,7 @@ export default {
       status: false,
       layer: { 'download': false, 'user': '' },
       index: '',
+      setTime: '',
       height: 0,
       time: 2,
       setting: 0,
@@ -139,32 +148,41 @@ export default {
     })
   },
   onLoad () {
-    setInterval(() => {
+    clearInterval(this.setTime)
+    this.setTime = setInterval(() => {
       if (this.time) {
         this.time--
       }
     }, 1000)
     this.height = this.TOP + 44
     this.paddingHeight = this.TOP
-    this._getData(this.page)
+    this._getData()
+    this._getRandom()
   },
   methods: {
-    async _getData (id) {
-      let data = await getData(`index/${id}`, null, 'GET')
-      if (data.error_code === 10000) {
+    async _getData () {
+      let res = await getData(`index?page=${this.page}`)
+      if (res.error_code === 10000) {
+        this.page = res.data.currentPage + 1
         let query = 60
         if (typeof this.setting === 'undefined' || this.setting === 0) {
           query = 40
         } else if (this.setting === 2) {
           query = 80
         }
-        data.data.map((item) => {
+        res.data.data.map((item) => {
           if (query !== 60) {
             item.urls.small = item.urls.small.replace('60', query)
           }
           this.data.push(item)
         })
-        this.page++
+        wx.stopPullDownRefresh()
+      }
+    },
+    async _getRandom () {
+      let res = await getData('random')
+      if (res.error_code === 10000) {
+        wx.setStorageSync('background', res.data.urls.small)
       }
     },
     change (e) {
@@ -180,6 +198,7 @@ export default {
         current: path,
         urls: [path]
       })
+      this.data[key]['status'] = 2
       getData('like', { id: id, 'url': path, 'status': 0 }, 'POST')
     },
     author (e, key) {
@@ -196,7 +215,7 @@ export default {
       if (status) {
         // 取消收藏
         (async () => {
-          let data = await getData(`like/${this.id}`, '', 'DELETE')
+          let data = await getData(`like/${id}`, '', 'DELETE')
           if (data.error_code === 10000) {
             this.data[key]['status'] = !status
             this.data[key]['likes']--
@@ -205,7 +224,7 @@ export default {
       } else {
         // 收藏
         (async () => {
-          let data = await getData('like', { id: id, 'url': url, 'status': 1 }, 'POST')
+          let data = await getData('like', { pid: id, 'url': url, 'status': 1 }, 'POST')
           if (data.error_code === 9999) {
             this.status = true
           } else if (data.error_code === 10000) {
@@ -238,7 +257,7 @@ export default {
                       // 在页面onLoad回调事件中创建插屏广告实例
                       if (wx.createInterstitialAd) {
                         interstitialAd = wx.createInterstitialAd({
-                          adUnitId: 'adunit-bec6635a6f3ac770'
+                          adUnitId: 'adunit-65251f2e715de801'
                         })
                         interstitialAd.onLoad((err) => {
                           console.log(err)
@@ -337,12 +356,18 @@ export default {
   },
   onReachBottom: function () {
     this._getData(this.page)
+    this.page++
   },
-  onPullDownRefresh: function () { },
+  onPullDownRefresh: function () {
+    this.time = 1
+    this.data = []
+    this.page = 1
+    this._getData(this.page)
+  },
   onShareAppMessage: function (e) {
     if (e.from === 'button') {
       return {
-        'title': '',
+        'title': `${e.target.dataset.title} @ Photo by ${e.target.dataset.username} on Unsplash`,
         'imageUrl': e.target.dataset.image
       }
     }
@@ -360,7 +385,7 @@ export default {
     width: 100%;
     background: #fff;
     position: fixed;
-    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.05);
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.12);
     top: 0px;
     display: flex;
     box-sizing: border-box;
@@ -374,6 +399,7 @@ export default {
 
   .content {
     width: 7.5rem;
+    margin-top: 10px;
     .item {
       padding-bottom: 25px;
       ad {
@@ -384,9 +410,10 @@ export default {
         line-height: 1rem;
         justify-content: flex-start;
         padding: 0px 0.25rem;
+        margin-bottom: 5px;
         image {
-          width: 32px;
-          height: 32px;
+          width: 43px;
+          height: 43px;
           border-radius: 100%;
           margin: auto 0px;
         }
@@ -395,7 +422,7 @@ export default {
           font-size: 16px;
           font-weight: 500;
           color: #000;
-          margin-left: 5px;
+          margin-left: 10px;
         }
       }
       .item-image {
@@ -403,14 +430,34 @@ export default {
         min-height: 200px;
         display: flex;
         position: relative;
-        i {
+        .title {
           position: absolute;
           width: 100%;
-          min-height: 200px;
-          background: #6d85c3;
-          left: 0px;
-          top: 0px;
+          padding: 0.25rem;
+          display: flex;
+          align-content: flex-end;
+          background: linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0.01),
+            rgba(0, 0, 0, 0.3)
+          );
+          left: 0;
+          bottom: 0px;
           transition: all 0.2s ease-in-out;
+          z-index: 1000;
+          font-size: 14px;
+          color: #fff;
+          box-sizing: border-box;
+          opacity: 0;
+          span {
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            line-clamp: 1;
+            -webkit-box-orient: vertical;
+            word-break: break-all;
+            height: 0.38rem;
+          }
         }
         image {
           width: 100%;
