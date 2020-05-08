@@ -13,24 +13,26 @@
         <div class="item flex"
              v-for="(val,key) in data"
              :key="key">
-          <ad unit-id="adunit-d276b550be3a144f"
-              v-if="key===2"></ad>
-          <ad unit-id="adunit-b91c1cb9b293f052"
-              v-if="key===5"></ad>
+          <ad unit-id="adunit-e9ae130b63a625d4"
+              v-if="key===3" ad-intervals="30" ad-type="video"></ad>
+          <ad unit-id="adunit-16758b8b52aa6b52"
+              v-if="key===7" ad-intervals="30" ad-type="video"></ad>
           <ad unit-id="adunit-ade4ac59067aeeb9"
-              v-if="key===10"></ad>
+              v-if="key===10" ad-intervals="30"></ad>
+          <ad unit-id="adunit-53bcefd25f26fd73"
+              v-if="key===13" ad-intervals="30" ad-type="video"></ad>
           <ad unit-id="adunit-76e23695b1552a61"
-              v-if="key===15"></ad>
+              v-if="key===15" ad-intervals="30"></ad>
           <ad unit-id="adunit-93e2ee2bb7eff037"
-              v-if="key===18"></ad>
+              v-if="key===18" ad-intervals="30"></ad>
           <ad unit-id="adunit-a1caa0e1cc5bbd90"
-              v-if="key>20&&key%5===0&&key<40"></ad>
+              v-if="key>20&&key%5===0&&key<40" ad-intervals="30"></ad>
           <ad unit-id="adunit-b91c1cb9b293f052"
-              v-if="key>40&&key%4===0&&key<60"></ad>
-          <ad unit-id="adunit-76e23695b1552a61"
-              v-if="key>60&&key%3===0&&key<80"></ad>
+              v-if="key>40&&key%4===0&&key<60" ad-intervals="30"></ad>
+          <ad unit-id="adunit-2a6f6754d63eb41b"
+              v-if="key>60&&key%3===0&&key<80" ad-type="video" ad-intervals="30"></ad>
           <ad unit-id="adunit-b1b35184ce7467f6"
-              v-if="key>80&&key%2===0"></ad>
+              v-if="key>80&&key%2===0" ad-intervals="30"></ad>
           <div class="author flex"
                :data-value="val.user.username"
                @click="author($event,key)">
@@ -210,6 +212,10 @@ export default {
     share (key) { },
     // 收藏
     like (status, key) {
+      if (!wx.getStorageSync('token')) {
+        this.status = true
+        return false
+      }
       let url = this.data[key]['urls']['thumb']
       let id = this.data[key]['id']
       if (status) {
@@ -230,6 +236,13 @@ export default {
           } else if (data.error_code === 10000) {
             this.data[key]['status'] = !status
             this.data[key]['likes']++
+            wx.showToast({
+              title: '操作成功',
+              icon: 'none',
+              duration: 2000,
+              mask: true,
+              success: res => {}
+            })
           }
         })()
       }
@@ -312,43 +325,12 @@ export default {
         }
       })
     },
-    // 下载远程图片
-    _remoteUrl (photo) {
-      wx.request({
-        url: `https://download.0558web.com/upload/${photo}`, // 开发者服务器接口地址",
-        data: 'data', // 请求的参数",
-        method: 'GET',
-        dataType: 'json', // 如果设为json，会尝试对返回的数据做一次 JSON.parse
-        success: (res) => {
-          if (res.data.status === 200) {
-            if (!res.data.data || res.data.data.length < 5) {
-              wx.hideLoading()
-              wx.showToast({
-                title: '下载失败', // 提示的内容,
-                icon: 'none', // 图标,
-                duration: 2000, // 延迟时间,
-                mask: true, // 显示透明蒙层，防止触摸穿透,
-                success: res => {
-                  this.layer.download = false
-                }
-              })
-            } else {
-              let url = `https://download.0558web.com${res.data.data}`
-              this._download(url)
-            }
-          }
-        },
-        fail: () => { },
-        complete: () => { }
-      })
-    },
     // 下载远程链接
     download (key) {
       let small = this.data[key]['urls']['small']
       this.layer.user = this.data[key]['user']['name']
       this.layer.download = small
-      let url = new RegExp('(photo-.*?=)').exec(small)[0].replace('?ixlib=', '')
-      this._remoteUrl(url)
+      this._download(`https://unsplash.mphot.cn/api/download?url=${small}`)
     },
     close () {
       this.status = false

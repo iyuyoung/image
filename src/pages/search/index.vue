@@ -5,12 +5,17 @@
         <!-- 列表 -->
         <div class="flex list">
           <div class="item flex" v-for="(val, key) in list" :key="key">
-            <ad unit-id="adunit-a4219c4dd580547b" v-if="key === 2"></ad>
-            <ad unit-id="adunit-e7f16c534684d45b" v-if="key === 5"></ad>
-            <ad unit-id="adunit-bec33b4f87f3274a" v-if="key === 10"></ad>
-            <ad unit-id="adunit-25ccf9ef7fc48d65" v-if="key === 15"></ad>
-            <ad unit-id="adunit-c3e9f27cd84a6e9f" v-if="key === 18"></ad>
-            <ad unit-id="adunit-b1b35184ce7467f6" v-if="key === 20"></ad>
+            <ad unit-id="adunit-a4219c4dd580547b" ad-intervals="30" v-if="key === 2"></ad>
+            <ad unit-id="adunit-d276b550be3a144f" ad-intervals="30" v-if="key === 5"></ad>
+            <ad unit-id="adunit-16758b8b52aa6b52"
+              v-if="key===7" ad-intervals="30" ad-type="video"></ad>
+            <ad unit-id="adunit-dc2c252b92d7dbd2"
+                v-if="key===10" ad-intervals="30"></ad>
+            <ad unit-id="adunit-53bcefd25f26fd73"
+                v-if="key===13" ad-intervals="30" ad-type="video"></ad>
+            <ad unit-id="adunit-25ccf9ef7fc48d65" ad-intervals="30" v-if="key === 15"></ad>
+            <ad unit-id="adunit-b91c1cb9b293f052" ad-intervals="30" v-if="key === 18"></ad>
+            <ad unit-id="adunit-b1b35184ce7467f6" ad-intervals="30" v-if="key === 20"></ad>
             <div
               class="item-image flex"
               :style="{ height: ((750 / val.width) * val.height) / 2 + 'px' }"
@@ -218,19 +223,40 @@ export default {
                     icon: 'success', // 图标,
                     duration: 2000, // 延迟时间,
                     mask: true, // 显示透明蒙层，防止触摸穿透,
-                    success: (res) => {
+                    success: res => {
                       this.layer.download = false
+                      // 在页面中定义插屏广告
+                      let interstitialAd = null
+
+                      // 在页面onLoad回调事件中创建插屏广告实例
+                      if (wx.createInterstitialAd) {
+                        interstitialAd = wx.createInterstitialAd({
+                          adUnitId: 'adunit-65251f2e715de801'
+                        })
+                        interstitialAd.onLoad((err) => {
+                          console.log(err)
+                        })
+                        interstitialAd.onError((err) => {
+                          console.log(err)
+                        })
+                        interstitialAd.onClose((err) => {
+                          console.log(err)
+                        })
+                      }
+
+                      // 在适合的场景显示插屏广告
+                      if (interstitialAd) {
+                        interstitialAd.show().catch((err) => {
+                          console.error(err)
+                        })
+                      }
                     }
                   })
                 }
               },
               fail: (res) => {
                 console.log(res)
-                if (
-                  res.errMsg === 'saveImageToPhotosAlbum:fail auth deny' ||
-                  res.errMsg ===
-                    'saveImageToPhotosAlbum:fail authorize no response'
-                ) {
+                if (res.errMsg === 'saveImageToPhotosAlbum:fail auth deny' || res.errMsg === 'saveImageToPhotosAlbum:fail authorize no response') {
                   wx.authorize({
                     scope: 'scope.writePhotosAlbum',
                     success () {
@@ -244,7 +270,6 @@ export default {
                         success: (res) => {
                           wx.openSetting({
                             success: (res) => {
-                              console.log(res)
                             }
                           })
                         }
@@ -261,39 +286,12 @@ export default {
         }
       })
     },
-    // 下载远程图片
-    _remoteUrl (photo) {
-      wx.request({
-        url: `https://download.0558web.com/upload/${photo}`, // 开发者服务器接口地址",
-        data: 'data', // 请求的参数",
-        method: 'GET',
-        dataType: 'json', // 如果设为json，会尝试对返回的数据做一次 JSON.parse
-        success: (res) => {
-          if (res.data.status === 200) {
-            if (!res.data.data || res.data.data.length < 5) {
-              wx.hideLoading()
-              wx.showToast({
-                title: '下载失败', // 提示的内容,
-                icon: 'none', // 图标,
-                duration: 2000, // 延迟时间,
-                mask: true, // 显示透明蒙层，防止触摸穿透,
-                success: (res) => {
-                  this.layer.download = false
-                }
-              })
-            } else {
-              let url = `https://download.0558web.com${res.data.data}`
-              this._download(url)
-            }
-          }
-        },
-        fail: () => {},
-        complete: () => {}
-      })
-    },
     // 下载远程链接
-    download (url) {
-      this._download(url)
+    download (key) {
+      let small = this.list[key]['urls']['small']
+      this.layer.user = this.list[key]['user']['name']
+      this.layer.download = small
+      this._download(`https://unsplash.mphot.cn/api/download?url=${small}`)
     },
     close () {
       this.status = false

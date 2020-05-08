@@ -1,31 +1,25 @@
 <template>
   <div class="main">
-    <div class="header"
-         :style="{'padding-top':height+'px'}">
+    <div class="header" :style="{ 'padding-top': height + 'px' }">
       <image src="../../static/image/unsplash_logo_white.png"></image>
     </div>
     <header>
-      <div class="header-bg"></div>
+      <div class="header-bg" :style="{ 'background-image': 'url(' + bg + ')' }"></div>
       <div class="header-main padding">
-        <div class="header-item flex"
-             @click="open('personal',0)">
+        <div class="header-item flex" @click="open('personal', 0)">
           <div class="avatar">
-            <open-data class="avatar-url"
-                       type="userAvatarUrl"></open-data>
+            <open-data class="avatar-url" type="userAvatarUrl"></open-data>
           </div>
           <div class="userInfo">
-            <open-data type="userNickName"
-                       class="nickname"></open-data>
+            <open-data type="userNickName" class="nickname"></open-data>
           </div>
         </div>
         <div class="server flex padding">
-          <div class="server-item"
-               @click="open('list',0)">
+          <div class="server-item" @click="open('list', 0)">
             <span v-text="data.footprint"></span>
             <span>足迹</span>
           </div>
-          <div class="server-item"
-               @click="open('list',1)">
+          <div class="server-item" @click="open('list', 1)">
             <span v-text="data.number"></span>
             <span>收藏</span>
           </div>
@@ -33,39 +27,29 @@
       </div>
     </header>
     <div class="content flex">
-      <div class="item flex"
-           @click="openSetting('setting')">
+      <div class="item flex" @click="openSetting('setting')">
         <image src="../../static/image/icon-setting.png"></image>
         <span>设置</span>
-        <image src="../../static/image/icon-right.png"
-               class="icon"></image>
+        <image src="../../static/image/icon-right.png" class="icon"></image>
       </div>
       <div class="item flex">
-        <button plain="true"
-                open-type="feedback"></button>
+        <button plain="true" open-type="feedback"></button>
         <image src="../../static/image/icon-chat.png"></image>
         <span>问题反馈</span>
-        <image src="../../static/image/icon-right.png"
-               class="icon"></image>
+        <image src="../../static/image/icon-right.png" class="icon"></image>
       </div>
-      <div class="item flex"
-           @click="pay">
+      <div class="item flex" @click="pay">
         <image src="../../static/image/icon-gift.png"></image>
         <span>打赏作者</span>
-        <image src="../../static/image/icon-right.png"
-               class="icon"></image>
+        <image src="../../static/image/icon-right.png" class="icon"></image>
       </div>
-      <div class="item flex"
-           @click="openAd"
-           v-if="data.ad">
+      <div class="item flex" @click="openAd" v-if="data.ad">
         <image src="../../static/image/icon_love.png"></image>
         <span>观看视频(获得永久下载资格)</span>
-        <image src="../../static/image/icon-right.png"
-               class="icon"></image>
+        <image src="../../static/image/icon-right.png" class="icon"></image>
       </div>
     </div>
-    <Login :status="status"
-           @close_login="close"></Login>
+    <Login :status="status" @close_login="close"></Login>
   </div>
 </template>
 
@@ -81,7 +65,8 @@ export default {
       token: '',
       status: false,
       height: 20,
-      data: { 'footprint': 0, 'number': 0, 'ad': false, 'background': '' }
+      bg: 'https://www.mphot.cn/uploads/20190425/photo-1565038930214-09566ed2149b.jpg?imageView2/0/format/jpg/q/80',
+      data: { footprint: 0, number: 0, ad: false }
     }
   },
   onLoad () {
@@ -90,6 +75,12 @@ export default {
   onShow () {
     this.height = this.TOP
     this.token = wx.getStorageSync('token')
+    let bg = wx.getStorageSync('background')
+    if (bg) {
+      setTimeout(() => {
+        this.bg = bg
+      }, 3000)
+    }
     this._getData()
   },
   methods: {
@@ -138,7 +129,7 @@ export default {
             icon: 'none',
             duration: 1500,
             mask: true,
-            success: res => { }
+            success: (res) => {}
           })
         })
         videoAd.onClose((res) => {
@@ -148,7 +139,7 @@ export default {
               icon: 'none',
               duration: 1500,
               mask: true,
-              success: res => { }
+              success: (res) => {}
             })
           } else {
             // 播放中途退出，不下发游戏奖励
@@ -157,7 +148,7 @@ export default {
               icon: 'none',
               duration: 1500,
               mask: true,
-              success: res => { }
+              success: (res) => {}
             })
           }
         })
@@ -167,17 +158,17 @@ export default {
       if (videoAd) {
         videoAd.show().catch(() => {
           // 失败重试
-          videoAd.load()
+          videoAd
+            .load()
             .then(() => videoAd.show())
-            .catch(err => {
+            .catch((err) => {
               console.log(err)
             })
         })
       }
     }
   },
-  created () {
-  }
+  created () {}
 }
 </script>
 
@@ -210,9 +201,10 @@ export default {
       width: 100%;
       height: 240px;
       display: flex;
-      background: url("https://www.mphot.cn/uploads/20190425/photo-1565038930214-09566ed2149b.jpg?imageView2/0/format/jpg/q/80");
+      background-image: url('https://www.mphot.cn/uploads/20190425/photo-1565038930214-09566ed2149b.jpg?imageView2/0/format/jpg/q/80');
       background-repeat: center;
       background-size: 100%;
+      transition: all 1s;
       image {
         width: 100%;
         height: 4rem;
