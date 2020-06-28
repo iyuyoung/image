@@ -1,6 +1,3 @@
 {
-  "navigationBarTitleText": "首页",
-  "usingComponents": {
-    "painter": "/static/painter/painter"
-  }
+  "navigationBarTitleText": "首页"
 }

@@ -3,7 +3,7 @@ var Fly = require('flyio/dist/npm/wx')
 const request = new Fly()
 
 // 配置请求基地址
-request.config.baseURL = 'https://unsplash.mphot.cn/api/'
+request.config.baseURL = 'https://unsplash.mphot.cn/'
 
 request.interceptors.request.use(
   (request) => {
