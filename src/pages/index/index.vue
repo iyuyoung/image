@@ -13,26 +13,6 @@
         <div class="item flex"
              v-for="(val,key) in data"
              :key="key">
-          <ad unit-id="adunit-e9ae130b63a625d4"
-              v-if="key===3" ad-intervals="30" ad-type="video"></ad>
-          <ad unit-id="adunit-16758b8b52aa6b52"
-              v-if="key===7" ad-intervals="30" ad-type="video"></ad>
-          <ad unit-id="adunit-ade4ac59067aeeb9"
-              v-if="key===10" ad-intervals="30"></ad>
-          <ad unit-id="adunit-53bcefd25f26fd73"
-              v-if="key===13" ad-intervals="30" ad-type="video"></ad>
-          <ad unit-id="adunit-76e23695b1552a61"
-              v-if="key===15" ad-intervals="30"></ad>
-          <ad unit-id="adunit-93e2ee2bb7eff037"
-              v-if="key===18" ad-intervals="30"></ad>
-          <ad unit-id="adunit-a1caa0e1cc5bbd90"
-              v-if="key>20&&key%5===0&&key<40" ad-intervals="30"></ad>
-          <ad unit-id="adunit-b91c1cb9b293f052"
-              v-if="key>40&&key%4===0&&key<60" ad-intervals="30"></ad>
-          <ad unit-id="adunit-2a6f6754d63eb41b"
-              v-if="key>60&&key%3===0&&key<80" ad-type="video" ad-intervals="30"></ad>
-          <ad unit-id="adunit-b1b35184ce7467f6"
-              v-if="key>80&&key%2===0" ad-intervals="30"></ad>
           <div class="author flex"
                :data-value="val.user.username"
                @click="author($event,key)">
@@ -44,7 +24,7 @@
                :style="{height:750/val.width*val.height/2+'px'}">
             <div class="title"
                  :style="{opacity:val.status===2?1:0}">
-              <span>{{val.alt_description?val.alt_description:''}} {{val.description?val.description:''}} Photo by {{val.user.name}} on Unsplash。 Unsplash官方图片实时同步更新 Unsplash精选图片、高清壁纸、Unsplash图片下载 Unsplash助手</span>
+              <span>{{val.alt_description?val.alt_description:''}} {{val.description?val.description:''}} Photo by {{val.user.name}} on Unsplash</span>
             </div>
             <image :src="val.urls.small"
                    :style="{background:val.color,height:750/val.width*val.height/2+'px'}"

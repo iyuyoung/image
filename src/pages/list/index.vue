@@ -4,16 +4,6 @@
     <scroll-view scroll-y v-if="data">
       <div class="content">
         <div class="item" v-for="(val, key) in data" :key="key">
-          <ad unit-id="adunit-d276b550be3a144f" ad-intervals="30" v-if="key === 5"></ad>
-            <ad unit-id="adunit-16758b8b52aa6b52"
-              v-if="key===7" ad-intervals="30" ad-type="video"></ad>
-            <ad unit-id="adunit-dc2c252b92d7dbd2"
-                v-if="key===10" ad-intervals="30"></ad>
-            <ad unit-id="adunit-53bcefd25f26fd73"
-                v-if="key===13" ad-intervals="30" ad-type="video"></ad>
-            <ad unit-id="adunit-25ccf9ef7fc48d65" ad-intervals="30" v-if="key === 15"></ad>
-            <ad unit-id="adunit-b91c1cb9b293f052" ad-intervals="30" v-if="key === 18"></ad>
-            <ad unit-id="adunit-b1b35184ce7467f6" ad-intervals="30" v-if="key === 20"></ad>
           <image
             :src="val.image"
             :data-index="key"

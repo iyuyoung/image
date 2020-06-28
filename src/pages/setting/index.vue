@@ -6,7 +6,6 @@
         <span>图片质量</span>
         <image src="../../static/image/icon-right.png"></image>
       </div>
-      <ad unit-id="adunit-d276b550be3a144f"></ad>
     </div>
   </div>
 </template>

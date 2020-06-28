@@ -12,7 +12,7 @@ export default class LastMayday {
     };
 
     _template (index = 1) {
-      let background = `https://dog.inc66.com/uploads/20190228/base_${index}.png`
+      let background = ``
       if (index === 1) {
         return ({
           background: background,

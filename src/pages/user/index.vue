@@ -43,11 +43,6 @@
         <span>打赏作者</span>
         <image src="../../static/image/icon-right.png" class="icon"></image>
       </div>
-      <div class="item flex" @click="openAd" v-if="data.ad">
-        <image src="../../static/image/icon_love.png"></image>
-        <span>观看视频(获得永久下载资格)</span>
-        <image src="../../static/image/icon-right.png" class="icon"></image>
-      </div>
     </div>
     <Login :status="status" @close_login="close"></Login>
   </div>
@@ -65,7 +60,7 @@ export default {
       token: '',
       status: false,
       height: 20,
-      bg: 'https://www.mphot.cn/uploads/20190425/photo-1565038930214-09566ed2149b.jpg?imageView2/0/format/jpg/q/80',
+      bg: '',
       data: { footprint: 0, number: 0, ad: false }
     }
   },

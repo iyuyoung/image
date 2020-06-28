@@ -1,37 +1,46 @@
-# unsplash
+### mpvue-Unsplash
 
-> mpvue 开发的unsplash
+> 基于mpvue开发的一款查看Unsplash图片的小程序
 
-## Build Setup
+### 演示
 
-``` bash
-# 初始化项目
-vue init mpvue/mpvue-quickstart myproject
-cd myproject
+> 图片
 
-# 安装依赖
-yarn
+![项目示例]()
 
-# 开发时构建
-npm dev
+### 使用方法
+1.git clone https://github.com/iyuyoung/image.git
+2.npm i
+3.执行 npm start
+4.开发者工具导入/dist/wx/
 
-# 打包构建
-npm build
 
-# 指定平台的开发时构建(微信、百度、头条、支付宝)
-npm dev:wx
-npm dev:swan
-npm dev:tt
-npm dev:my
+### 相关依赖
 
-# 指定平台的打包构建
-npm build:wx
-npm build:swan
-npm build:tt
-npm build:my
+* flyio - 同时支持浏览器、小程序、Node、Weex 及快应用的基于 Promise 的跨平台请求库
+* 小程序原生swiper
 
-# 生成 bundle 分析报告
-npm run build --report
-```
+### 相关API
 
-For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+* 首页数据 https://unsplash.mphot.cn/index?page=${page} page 默认1 第一页
+* 精选数据 https://unsplash.mphot.cn/index?page=${page}&order_by=popular page 默认1 第一页
+* 随机图片 https://unsplash.mphot.cn/random
+* 获取作者详情页面 https://unsplash.mphot.cn/author?username=${username}&page=${page}
+* 搜索接口 https://unsplash.mphot.cn/search?title={title}&page=${page}
+
+
+### 相关文章
+
+https://mp.weixin.qq.com/s/1f6BA8W2aCr9qWZ6Kgz_jQ
+
+
+### 小程序二维码
+
+![小程序二维码](https://user-images.githubusercontent.com/8666861/54965038-c97d2500-4fa9-11e9-9ba3-883843c53f5e.jpg)
+
+### todolist
+
+- [x] 添加作者详情页
+- [x] 添加登录、个人收藏页面
+- [x] 下载图片
+

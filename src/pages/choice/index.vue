@@ -23,20 +23,6 @@
         <!-- 列表 -->
         <div class="flex list">
           <div class="item flex" v-for="(val, key) in list" :key="key">
-            <ad unit-id="adunit-baf7c86e88f537f3" v-if="key === 2" ad-intervals="30" ad-type="video"></ad>
-            <ad unit-id="adunit-e7f16c534684d45b" v-if="key === 5" ad-intervals="30"></ad>
-            <ad unit-id="adunit-53bcefd25f26fd73" v-if="key === 10" ad-intervals="30" ad-type="video" ></ad>
-            <ad unit-id="adunit-25ccf9ef7fc48d65" v-if="key === 15" ad-intervals="30"></ad>
-            <ad unit-id="adunit-c3e9f27cd84a6e9f" v-if="key === 18" ad-intervals="30"></ad>
-            <ad unit-id="adunit-e6a3148d6befd37c" v-if="key === 20" ad-intervals="30" ad-type="video"></ad>
-             <ad unit-id="adunit-a1caa0e1cc5bbd90"
-              v-if="key>20&&key%5===0&&key<40" ad-intervals="30"></ad>
-          <ad unit-id="adunit-b91c1cb9b293f052"
-              v-if="key>40&&key%4===0&&key<60" ad-intervals="30"></ad>
-          <ad unit-id="adunit-f96edb84f39acfc0"
-              v-if="key>60&&key%3===0&&key<80" ad-type="video" ad-intervals="30"></ad>
-          <ad unit-id="adunit-b1b35184ce7467f6"
-              v-if="key>80&&key%2===0" ad-intervals="30"></ad>
             <div
               class="item-image flex"
               :style="{ height: ((750 / val.width) * val.height) / 2 + 'px' }"
@@ -45,9 +31,7 @@
                 <span
                   >{{ val.alt_description ? val.alt_description : "" }}
                   {{ val.description ? val.description : "" }} Photo by
-                  {{ val.user.name }} on Unsplash。 Unsplash官方图片实时同步更新
-                  Unsplash精选图片、高清壁纸、Unsplash图片下载
-                  Unsplash助手</span
+                  {{ val.user.name }} on Unsplash</span
                 >
               </div>
               <image
