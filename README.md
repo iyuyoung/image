@@ -4,9 +4,9 @@
 
 ### 演示图片
 
-![项目示例](https://image.mphot.cn/images/WX20200628-153841.png?imageView2/0/format/webp/q/75)
-![项目示例](https://image.mphot.cn/images/WX20200628-154034.png?imageView2/0/format/webp/q/75)
-![项目示例](https://image.mphot.cn/images/WX20200628-154105.png?imageView2/0/format/webp/q/75)
+![项目示例](https://github.com/iyuyoung/Apicloud/blob/master/image/WX20200628-153841.png)
+![项目示例](https://github.com/iyuyoung/Apicloud/blob/master/image/WX20200628-154105.png?raw=true)
+![项目示例](https://github.com/iyuyoung/Apicloud/blob/master/image/WX20200628-154034.png?raw=true)
 
 ### 使用方法
 * git clone https://github.com/iyuyoung/image.git
