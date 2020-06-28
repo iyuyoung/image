@@ -25,8 +25,8 @@
 * 首页数据 https://unsplash.mphot.cn/index?page=${page} page 默认1 第一页
 * 精选数据 https://unsplash.mphot.cn/index?page=${page}&order_by=popular page 默认1 第一页
 * 随机图片 https://unsplash.mphot.cn/random
-* 获取作者详情页面 https://unsplash.mphot.cn/author?username=${username}&page=${page}
 * 搜索接口 https://unsplash.mphot.cn/search?title={title}&page=${page}
+* 获取作者详情页面 https://unsplash.mphot.cn/author?username=${username}&page=${page}
 
 
 ### 相关文章
