@@ -2,17 +2,17 @@
 
 > 基于mpvue开发的一款查看Unsplash图片的小程序
 
-### 演示
+### 演示图片
 
-> 图片
-
-![项目示例]()
+![项目示例](https://image.mphot.cn/images/WX20200628-153841.png?imageView2/0/format/webp/q/75)
+![项目示例](https://image.mphot.cn/images/WX20200628-154034.png?imageView2/0/format/webp/q/75)
+![项目示例](https://image.mphot.cn/images/WX20200628-154105.png?imageView2/0/format/webp/q/75)
 
 ### 使用方法
-1.git clone https://github.com/iyuyoung/image.git
-2.npm i
-3.执行 npm start
-4.开发者工具导入/dist/wx/
+* git clone https://github.com/iyuyoung/image.git
+* npm i
+* 执行 npm start
+* 开发者工具导入/dist/wx/
 
 
 ### 相关依赖
@@ -38,7 +38,7 @@ https://mp.weixin.qq.com/s/1f6BA8W2aCr9qWZ6Kgz_jQ
 
 ![小程序二维码](https://user-images.githubusercontent.com/8666861/54965038-c97d2500-4fa9-11e9-9ba3-883843c53f5e.jpg)
 
-### todolist
+### ToDolist
 
 - [x] 添加作者详情页
 - [x] 添加登录、个人收藏页面
